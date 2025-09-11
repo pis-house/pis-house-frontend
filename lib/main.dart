@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pis_house_frontend/infrastructures/firebase_init.dart';
 import 'package:pis_house_frontend/route.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase();
   runApp(
     const ProviderScope(
       child: MyApp(),

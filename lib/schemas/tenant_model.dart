@@ -9,10 +9,10 @@ part 'tenant_model.g.dart';
 @JsonSerializable()
 class TenantModel {
   final String id;
-  final List<DeviceModel> devices;
+  final Map<String, DeviceModel> devices;
   final String name;
   final NotificationModel notification;
-  final List<UserModel> users;
+  final Map<String, UserModel> users;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @JsonKey(name: 'updated_at')
