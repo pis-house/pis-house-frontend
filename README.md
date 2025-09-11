@@ -4,6 +4,9 @@ flutter pub get
 ### アプリ実行
 flutter run
 
+### Jsonシリアライザーモデルファイルの自動生成
+dart run build_runner build
+
 ### レイアウトのコンポーネント(レイアウトを作成する時に参照)
 https://docs.flutter.dev/ui/widgets/material
 
