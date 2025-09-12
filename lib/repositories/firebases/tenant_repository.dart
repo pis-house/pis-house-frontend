@@ -1,39 +1,39 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pis_house_frontend/repositories/interfaces/tenant_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/tenant_model.dart';
 
 class TenantRepository implements TenantRepositoryInterface {
-  final FirebaseDatabase _db = FirebaseDatabase.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  DatabaseReference _tenantRef(String tenantId) {
-    return _db.ref('tenants/$tenantId');
+  CollectionReference _rootRef() {
+    return _db.collection('tenants');
   }
 
   @override
   Future<TenantModel?> firstByTenantId(String tenantId) async {
-    final snapshot = await _tenantRef(tenantId).get();
+    final snapshot = await _rootRef().doc(tenantId).get();
     if (!snapshot.exists) return null;
 
-    final data = Map<String, dynamic>.from(snapshot.value as Map);
+    final data = Map<String, dynamic>.from(snapshot.data() as Map);
     return TenantModel.fromJson(data);
   }
 
   @override
   Future<TenantModel> create(TenantModel tenant) async {
     final json = tenant.toJson();
-    final ref = _tenantRef(tenant.id).child('node');
+    final ref = _rootRef().doc(tenant.id);
     await ref.set(json);
     final snapshot = await ref.get();
     if (!snapshot.exists) {
       throw Exception('Failed to read tenant after create');
     }
-    return TenantModel.fromJson(snapshot.value as Map<String, dynamic>);
+    return TenantModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 
   @override
   Future<void> delete(String tenantId) async {
-    final ref = _tenantRef(tenantId);
-    await ref.remove();
+    final ref = _rootRef().doc(tenantId);
+    await ref.delete();
     final snapshot = await ref.get();
     if (snapshot.exists) {
       throw Exception('Failed to read tenant after delete');
@@ -42,12 +42,12 @@ class TenantRepository implements TenantRepositoryInterface {
 
   @override
   Future<TenantModel> update(TenantModel tenant) async {
-    final ref = _tenantRef(tenant.id).child('node');
-    await ref.set(tenant.toJson());
+    final ref = _rootRef().doc(tenant.id);
+    await ref.update(tenant.toJson());
     final snapshot = await ref.get();
     if (!snapshot.exists) {
       throw Exception('Failed to read tenant after update');
     }
-    return TenantModel.fromJson(snapshot.value as Map<String, dynamic>);
+    return TenantModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
