@@ -1,7 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pis_house_frontend/schemas/device_model.dart';
-import 'package:pis_house_frontend/schemas/notification_model.dart';
-import 'package:pis_house_frontend/schemas/user_model.dart';
 import 'package:uuid/uuid.dart';
 
 part 'tenant_model.g.dart';

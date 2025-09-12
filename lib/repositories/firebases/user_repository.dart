@@ -65,6 +65,5 @@ class UserRepository implements UserRepositoryInterface {
       throw Exception('Failed to read user after update');
     }
     return UserModel.fromJson(snapshot.value as Map<String, dynamic>);
-    ;
   }
 }
