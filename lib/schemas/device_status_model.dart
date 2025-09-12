@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'device_status_model.g.dart';
 
-
 @JsonSerializable()
 class DeviceStatusModel {
   @JsonKey(name: 'aircon_temperature')

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 
 part 'user_model.g.dart';
-
 
 @JsonSerializable()
 class UserModel {
@@ -27,6 +27,25 @@ class UserModel {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  factory UserModel.create({
+    required bool isAdmin,
+    required String name,
+    required double preferredAirconTemperature,
+    required int preferredLightBrightnessPercent,
+  }) {
+    final now = DateTime.now();
+    final uuid = const Uuid().v7();
+    return UserModel(
+      id: uuid,
+      isAdmin: isAdmin,
+      name: name,
+      preferredAirconTemperature: preferredAirconTemperature,
+      preferredLightBrightnessPercent: preferredLightBrightnessPercent,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

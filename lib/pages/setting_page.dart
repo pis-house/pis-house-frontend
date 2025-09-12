@@ -32,7 +32,7 @@ class SettingPage extends HookConsumerWidget {
                 localCounter.value++;
                 ref.read(counterProvider.notifier).update((state) => state + 1);
               },
-              child: const Text('カウント')
+              child: const Text('カウント'),
             ),
           ],
         ),
@@ -40,4 +40,3 @@ class SettingPage extends HookConsumerWidget {
     );
   }
 }
-
