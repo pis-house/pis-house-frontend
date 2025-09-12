@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pis_house_frontend/schemas/device_status_model.dart';
+import 'package:uuid/uuid.dart';
 
 part 'device_model.g.dart';
-
 
 @JsonSerializable()
 class DeviceModel {
@@ -15,7 +15,7 @@ class DeviceModel {
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
-  DeviceModel({ 
+  DeviceModel({
     required this.id,
     required this.status,
     required this.name,
@@ -23,6 +23,23 @@ class DeviceModel {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  factory DeviceModel.create({
+    required String name,
+    required String type,
+    required DeviceStatusModel status,
+  }) {
+    final now = DateTime.now();
+    final uuid = const Uuid().v7();
+    return DeviceModel(
+      id: uuid,
+      name: name,
+      type: type,
+      status: status,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
 
   factory DeviceModel.fromJson(Map<String, dynamic> json) =>
       _$DeviceModelFromJson(json);

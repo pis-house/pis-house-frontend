@@ -36,10 +36,12 @@ class TabPage extends StatelessWidget {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         currentIndex: currentIndex,
         items: _tabs
-            .map((_TabInfo tab) => BottomNavigationBarItem(
-                  icon: Icon(tab.icon),
-                  label: tab.label,
-                ))
+            .map(
+              (_TabInfo tab) => BottomNavigationBarItem(
+                icon: Icon(tab.icon),
+                label: tab.label,
+              ),
+            )
             .toList(),
         onTap: (int index) {
           context.go(_tabs[index].path);
@@ -50,11 +52,7 @@ class TabPage extends StatelessWidget {
 }
 
 class _TabInfo {
-  const _TabInfo({
-    required this.label,
-    required this.icon,
-    required this.path,
-  });
+  const _TabInfo({required this.label, required this.icon, required this.path});
   final String label;
   final IconData icon;
   final String path;

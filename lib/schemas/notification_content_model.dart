@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'notification_content_model.g.dart';
 
-
 @JsonSerializable()
 class NotificationContentModel {
   final String id;

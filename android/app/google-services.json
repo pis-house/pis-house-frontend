@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "270304561393",
+    "firebase_url": "https://pis-house-default-rtdb.firebaseio.com",
+    "project_id": "pis-house",
+    "storage_bucket": "pis-house.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270304561393:android:b6e8eef8e095fb05d44150",
+        "android_client_info": {
+          "package_name": "com.example.pis_house_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuoTbIPK9b-I0qHBCuBoLuACWKTNvHvYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
