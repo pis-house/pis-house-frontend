@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/firebase_init.dart';
 import 'package:pis_house_frontend/route.dart';
 
+final authProvider = Provider((ref) {});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();

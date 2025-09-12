@@ -28,5 +28,13 @@ final GoRouter router = GoRouter(
         ),
       ],
     ),
+    GoRoute(path: '/login', builder: (context, state) => const Placeholder()),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const Placeholder(),
+    ),
   ],
+  redirect: (context, state) {
+    return null;
+  },
 );
