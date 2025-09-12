@@ -25,8 +25,8 @@ class MockNotificationRepository implements NotificationRepositoryInterface {
   };
 
   @override
-  Future<NotificationModel?> firstByTenantId(String tenantId) async {
-    return _store[tenantId];
+  Stream<NotificationModel?> firstSubscribeByTenantId(String tenantId) {
+    return Stream.value(_store[tenantId]);
   }
 
   Future<NotificationModel> create(
