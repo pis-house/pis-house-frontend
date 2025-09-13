@@ -106,6 +106,10 @@ class AuthService extends StateNotifier<AuthState> {
     required String password,
     required String tenantName,
   }) async {
+    final joinTenant = await _tenantRepository.firstByTenantName(tenantName);
+    if (joinTenant == null) {
+      throw TenantNotExistsException();
+    }
     late UserCredential credential;
     try {
       credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -120,11 +124,6 @@ class AuthService extends StateNotifier<AuthState> {
         email: email,
         password: password,
       );
-    }
-
-    final joinTenant = await _tenantRepository.firstByTenantName(tenantName);
-    if (joinTenant == null) {
-      throw TenantNotExistsException();
     }
     final existsUser = await _userRepository.firstByTenantIdAndUserId(
       joinTenant.id,
