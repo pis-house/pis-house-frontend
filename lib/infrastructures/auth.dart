@@ -184,7 +184,11 @@ class AuthService extends StateNotifier<AuthState> {
     state = state.copyWith(isLoggedIn: true, user: user);
   }
 
-  void logout() {
+  Future<void> logout() async {
+    if (!state.isLoggedIn) {
+      return;
+    }
+    await FirebaseAuth.instance.signOut();
     state = const AuthState();
   }
 
