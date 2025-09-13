@@ -185,9 +185,6 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    if (!state.isLoggedIn) {
-      return;
-    }
     await FirebaseAuth.instance.signOut();
     state = const AuthState();
   }
