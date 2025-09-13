@@ -7,7 +7,7 @@ class MockUserRepository implements UserRepositoryInterface {
     mockTenantId: {
       mockUserId1: UserModel(
         id: mockUserId1,
-        name: 'Tanaka',
+        displayName: 'Tanaka',
         isAdmin: true,
         preferredAirconTemperature: 25.0,
         preferredLightBrightnessPercent: 80,
@@ -16,7 +16,7 @@ class MockUserRepository implements UserRepositoryInterface {
       ),
       mockUserId2: UserModel(
         id: mockUserId2,
-        name: 'Suzuki',
+        displayName: 'Suzuki',
         isAdmin: false,
         preferredAirconTemperature: 22.0,
         preferredLightBrightnessPercent: 60,

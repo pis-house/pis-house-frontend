@@ -18,6 +18,16 @@ class MockTenantRepository implements TenantRepositoryInterface {
   }
 
   @override
+  Future<TenantModel?> firstByTenantName(String tenantName) async {
+    try {
+      final found = _store.values.where((tenant) => tenant.name == tenantName);
+      return found.isNotEmpty ? found.first : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
   Future<TenantModel> create(TenantModel tenant) async {
     _store[tenant.id] = tenant;
     return tenant;

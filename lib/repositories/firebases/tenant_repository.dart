@@ -19,6 +19,21 @@ class TenantRepository implements TenantRepositoryInterface {
   }
 
   @override
+  Future<TenantModel?> firstByTenantName(String tenantName) async {
+    final querySnapshot = await _rootRef()
+        .where('name', isEqualTo: tenantName)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) return null;
+
+    final data = Map<String, dynamic>.from(
+      querySnapshot.docs.first.data() as Map,
+    );
+    return TenantModel.fromJson(data);
+  }
+
+  @override
   Future<TenantModel> create(TenantModel tenant) async {
     final json = tenant.toJson();
     final ref = _rootRef().doc(tenant.id);
