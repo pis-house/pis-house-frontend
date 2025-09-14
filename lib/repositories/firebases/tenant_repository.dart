@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/repositories/interfaces/tenant_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/tenant_model.dart';
 
@@ -66,3 +67,7 @@ class TenantRepository implements TenantRepositoryInterface {
     return TenantModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
+
+final tenantRepositoryProvider = Provider<TenantRepositoryInterface>(
+  (ref) => TenantRepository(),
+);

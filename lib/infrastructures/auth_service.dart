@@ -4,6 +4,8 @@ import 'package:pis_house_frontend/exceptions/tenant_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_join_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_join_exception.dart';
+import 'package:pis_house_frontend/repositories/firebases/tenant_repository.dart';
+import 'package:pis_house_frontend/repositories/firebases/user_repository.dart';
 import 'package:pis_house_frontend/repositories/interfaces/tenant_repository_interface.dart';
 import 'package:pis_house_frontend/repositories/interfaces/user_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/tenant_model.dart';
@@ -26,14 +28,14 @@ class AuthUser {
 }
 
 class AuthState {
-  final bool isLoggedIn;
+  final bool isSignIn;
   final AuthUser? user;
 
-  const AuthState({this.isLoggedIn = false, this.user});
+  const AuthState({this.isSignIn = false, this.user});
 
-  AuthState copyWith({bool? isLoggedIn, AuthUser? user}) {
+  AuthState copyWith({bool? isSignIn, AuthUser? user}) {
     return AuthState(
-      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
+      isSignIn: isSignIn ?? this.isSignIn,
       user: user ?? this.user,
     );
   }
@@ -89,7 +91,7 @@ class AuthService extends StateNotifier<AuthState> {
       ),
     );
     state = state.copyWith(
-      isLoggedIn: true,
+      isSignIn: true,
       user: AuthUser(
         displayName: displayName,
         email: credential.user!.email ?? "",
@@ -143,7 +145,7 @@ class AuthService extends StateNotifier<AuthState> {
       ),
     );
     state = state.copyWith(
-      isLoggedIn: true,
+      isSignIn: true,
       user: AuthUser(
         displayName: newUser.displayName,
         email: credential.user!.email ?? "",
@@ -154,7 +156,7 @@ class AuthService extends StateNotifier<AuthState> {
     );
   }
 
-  Future<void> login({
+  Future<void> signIn({
     required String email,
     required String password,
     required String tenantName,
@@ -181,14 +183,24 @@ class AuthService extends StateNotifier<AuthState> {
       tenantId: existsTenant.id,
       userId: existUser.id,
     );
-    state = state.copyWith(isLoggedIn: true, user: user);
+    state = state.copyWith(isSignIn: true, user: user);
   }
 
-  Future<void> logout() async {
+  Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     state = const AuthState();
   }
 
-  bool get isLoggedIn => state.isLoggedIn;
+  bool get isSignIn => state.isSignIn;
   AuthUser? get user => state.user;
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  final tenantRepository = ref.watch(tenantRepositoryProvider);
+  final userRepository = ref.watch(userRepositoryProvider);
+
+  return AuthService(
+    tenantRepository: tenantRepository,
+    userRepository: userRepository,
+  );
+});

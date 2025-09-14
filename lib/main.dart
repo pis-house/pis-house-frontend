@@ -3,19 +3,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/firebase_init.dart';
 import 'package:pis_house_frontend/route.dart';
 
-final authProvider = Provider((ref) {});
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(goRouterProvider);
     const ColorScheme defaultColors = ColorScheme.light(
       primary: Colors.blue,
       onPrimary: Colors.blueGrey,
