@@ -1,51 +1,58 @@
 import 'package:flutter/material.dart';
 
-class PisTextField extends StatelessWidget {
+class PisTextFormField extends StatelessWidget {
   final String label;
   final bool obscureText;
-  final String? errorText;
   final double? width;
   final double? height;
-  final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
+  final void Function(String?)? onSaved;
+  final TextEditingController? controller;
 
-  const PisTextField({
+  const PisTextFormField({
     super.key,
     required this.label,
     this.obscureText = false,
-    this.errorText,
     this.width,
     this.height,
-    this.onChanged,
+    this.validator,
+    this.onSaved,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textField = TextField(
-      obscureText: obscureText,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: label,
-      ),
-    );
-    final textFieldWidget = height != null
-        ? SizedBox(height: height, child: textField)
-        : textField;
-
     return SizedBox(
-      width: width,
+      width: width ?? double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          textFieldWidget,
-          if (errorText != null && errorText!.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Text(
-                errorText!,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            height: height,
+            child: TextFormField(
+              controller: controller,
+              obscureText: obscureText,
+              validator: validator,
+              onSaved: onSaved,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade400),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade400),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade500, width: 2),
+                ),
+                errorStyle: const TextStyle(fontSize: 14),
               ),
             ),
+          ),
         ],
       ),
     );

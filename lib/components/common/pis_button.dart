@@ -24,7 +24,7 @@ class PisButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: theme.primaryColor,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onPressed: onPressed,
       child: Row(
@@ -53,14 +53,10 @@ class PisButton extends StatelessWidget {
       ),
     );
 
-    final buttonWidget = (width != null || height != null)
-        ? SizedBox(
-            width: width,
-            height: height,
-            child: IgnorePointer(ignoring: isLoading, child: button),
-          )
-        : IgnorePointer(ignoring: isLoading, child: button);
-
-    return buttonWidget;
+    return SizedBox(
+      width: width ?? double.infinity,
+      height: height ?? 40,
+      child: IgnorePointer(ignoring: isLoading, child: button),
+    );
   }
 }
