@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
+import 'package:ulid/ulid.dart';
 
 part 'tenant_model.g.dart';
 
@@ -21,8 +21,22 @@ class TenantModel {
 
   factory TenantModel.create({required String name}) {
     final now = DateTime.now();
-    final uuid = const Uuid().v7();
-    return TenantModel(id: uuid, name: name, createdAt: now, updatedAt: now);
+    final id = Ulid().toString();
+    return TenantModel(id: id, name: name, createdAt: now, updatedAt: now);
+  }
+
+  factory TenantModel.update({
+    required String id,
+    required String name,
+    required DateTime createdAt,
+  }) {
+    final now = DateTime.now();
+    return TenantModel(
+      id: id,
+      name: name,
+      createdAt: createdAt,
+      updatedAt: now,
+    );
   }
 
   factory TenantModel.fromJson(Map<String, dynamic> json) =>

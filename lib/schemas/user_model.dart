@@ -1,14 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
-
 part 'user_model.g.dart';
 
 @JsonSerializable()
 class UserModel {
   final String id;
+  @JsonKey(name: 'display_name')
+  final String displayName;
   @JsonKey(name: 'is_admin')
   final bool isAdmin;
-  final String name;
   @JsonKey(name: 'preferred_aircon_temperature')
   final double preferredAirconTemperature;
   @JsonKey(name: 'preferred_light_brightness_percent')
@@ -20,8 +19,8 @@ class UserModel {
 
   UserModel({
     required this.id,
+    required this.displayName,
     required this.isAdmin,
-    required this.name,
     required this.preferredAirconTemperature,
     required this.preferredLightBrightnessPercent,
     required this.createdAt,
@@ -29,20 +28,40 @@ class UserModel {
   });
 
   factory UserModel.create({
+    required String id,
+    required String displayName,
     required bool isAdmin,
-    required String name,
     required double preferredAirconTemperature,
     required int preferredLightBrightnessPercent,
   }) {
     final now = DateTime.now();
-    final uuid = const Uuid().v7();
     return UserModel(
-      id: uuid,
+      id: id,
+      displayName: displayName,
       isAdmin: isAdmin,
-      name: name,
       preferredAirconTemperature: preferredAirconTemperature,
       preferredLightBrightnessPercent: preferredLightBrightnessPercent,
       createdAt: now,
+      updatedAt: now,
+    );
+  }
+
+  factory UserModel.update({
+    required String id,
+    required String displayName,
+    required bool isAdmin,
+    required double preferredAirconTemperature,
+    required int preferredLightBrightnessPercent,
+    required DateTime createdAt,
+  }) {
+    final now = DateTime.now();
+    return UserModel(
+      id: id,
+      displayName: displayName,
+      isAdmin: isAdmin,
+      preferredAirconTemperature: preferredAirconTemperature,
+      preferredLightBrightnessPercent: preferredLightBrightnessPercent,
+      createdAt: createdAt,
       updatedAt: now,
     );
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/repositories/interfaces/user_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/user_model.dart';
 
@@ -64,3 +65,7 @@ class UserRepository implements UserRepositoryInterface {
     return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
+
+final userRepositoryProvider = Provider<UserRepositoryInterface>(
+  (ref) => UserRepository(),
+);

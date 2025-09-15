@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/repositories/interfaces/device_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/device_model.dart';
 
@@ -77,3 +78,7 @@ class DeviceRepository implements DeviceRepositoryInterface {
     return device;
   }
 }
+
+final deviceRepositoryProvider = Provider<DeviceRepositoryInterface>(
+  (ref) => DeviceRepository(),
+);

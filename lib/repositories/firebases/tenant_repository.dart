@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/repositories/interfaces/tenant_repository_interface.dart';
 import 'package:pis_house_frontend/schemas/tenant_model.dart';
 
@@ -15,6 +16,21 @@ class TenantRepository implements TenantRepositoryInterface {
     if (!snapshot.exists) return null;
 
     final data = Map<String, dynamic>.from(snapshot.data() as Map);
+    return TenantModel.fromJson(data);
+  }
+
+  @override
+  Future<TenantModel?> firstByTenantName(String tenantName) async {
+    final querySnapshot = await _rootRef()
+        .where('name', isEqualTo: tenantName)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) return null;
+
+    final data = Map<String, dynamic>.from(
+      querySnapshot.docs.first.data() as Map,
+    );
     return TenantModel.fromJson(data);
   }
 
@@ -51,3 +67,7 @@ class TenantRepository implements TenantRepositoryInterface {
     return TenantModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
+
+final tenantRepositoryProvider = Provider<TenantRepositoryInterface>(
+  (ref) => TenantRepository(),
+);
