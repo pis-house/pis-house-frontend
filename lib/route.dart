@@ -6,6 +6,7 @@ import 'package:pis_house_frontend/pages/notice_page.dart';
 import 'package:pis_house_frontend/pages/operational_status_page.dart';
 import 'package:pis_house_frontend/pages/setting_page.dart';
 import 'package:pis_house_frontend/pages/signin_page.dart';
+import 'package:pis_house_frontend/pages/signup_page.dart';
 import 'package:pis_house_frontend/pages/tab_page.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -32,10 +33,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(path: '/signin', builder: (context, state) => const SigninPage()),
+      GoRoute(
+        path: '/signin',
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: SigninPage()),
+      ),
       GoRoute(
         path: '/signup',
-        builder: (context, state) => const Placeholder(),
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: SignupPage()),
       ),
     ],
     redirect: (context, state) {
