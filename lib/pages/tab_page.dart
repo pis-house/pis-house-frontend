@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 
-class TabPage extends StatelessWidget {
+class TabPage extends HookConsumerWidget {
   const TabPage({super.key, required this.child});
   final Widget child;
 
@@ -25,11 +27,36 @@ class TabPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-    final int currentIndex = _locationToTabIndex(location);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final location = GoRouterState.of(context).uri.toString();
+    final currentIndex = _locationToTabIndex(location);
+    final theme = Theme.of(context);
+    final authService = ref.watch(authServiceProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(_tabs[currentIndex].label),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        backgroundColor: theme.primaryColor,
+        elevation: 4.0,
+        shadowColor: Colors.black26,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              switch (value) {
+                case 'ログアウト':
+                  authService.signOut();
+                  context.go('/signin');
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(value: 'ログアウト', child: Text('ログアウト')),
+            ],
+          ),
+        ],
+      ),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

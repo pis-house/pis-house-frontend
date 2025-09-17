@@ -144,6 +144,8 @@ class SignupPage extends HookConsumerWidget {
                                               tenantName: tenantName,
                                             );
                                       }
+                                      if (!context.mounted) return;
+                                      context.go('/');
                                     } on TenantNotExistsException catch (e) {
                                       if (!context.mounted) return;
                                       PisErrorSnackBar(

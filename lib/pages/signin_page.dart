@@ -99,6 +99,8 @@ class SigninPage extends HookConsumerWidget {
                                         password: password,
                                         tenantName: tenantName,
                                       );
+                                      if (!context.mounted) return;
+                                      context.go('/');
                                     } on TenantNotExistsException catch (e) {
                                       if (!context.mounted) return;
                                       PisErrorSnackBar(
