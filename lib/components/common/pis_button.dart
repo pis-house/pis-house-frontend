@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PisButton extends StatelessWidget {
+class PisButton extends HookConsumerWidget {
   final String label;
   final VoidCallback? onPressed;
-  final bool isLoading;
   final double? height;
   final double? width;
 
@@ -11,14 +12,14 @@ class PisButton extends StatelessWidget {
     super.key,
     required this.label,
     this.onPressed,
-    this.isLoading = false,
     this.height,
     this.width,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isLoading = useState(false);
 
     final button = ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -26,12 +27,19 @@ class PisButton extends StatelessWidget {
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      onPressed: onPressed,
+      onPressed: () async {
+        if (onPressed == null) {
+          return;
+        }
+        isLoading.value = true;
+        await Future.sync(() => onPressed!());
+        isLoading.value = false;
+      },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (isLoading) ...[
+          if (isLoading.value) ...[
             SizedBox(
               width: (height ?? 40) * 0.5,
               height: (height ?? 40) * 0.5,
@@ -56,7 +64,7 @@ class PisButton extends StatelessWidget {
     return SizedBox(
       width: width ?? double.infinity,
       height: height ?? 40,
-      child: IgnorePointer(ignoring: isLoading, child: button),
+      child: IgnorePointer(ignoring: isLoading.value, child: button),
     );
   }
 }

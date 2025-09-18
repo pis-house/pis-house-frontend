@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/exceptions/tenant_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_join_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_join_exception.dart';
+import 'package:pis_house_frontend/infrastructures/storage.dart';
 import 'package:pis_house_frontend/repositories/firebases/tenant_repository.dart';
 import 'package:pis_house_frontend/repositories/firebases/user_repository.dart';
 import 'package:pis_house_frontend/repositories/interfaces/tenant_repository_interface.dart';
@@ -44,13 +47,62 @@ class AuthState {
 class AuthService extends StateNotifier<AuthState> {
   final TenantRepositoryInterface _tenantRepository;
   final UserRepositoryInterface _userRepository;
+  late final StreamSubscription<User?> _authSubscription;
 
   AuthService({
     required TenantRepositoryInterface tenantRepository,
     required UserRepositoryInterface userRepository,
   }) : _tenantRepository = tenantRepository,
        _userRepository = userRepository,
-       super(const AuthState());
+       super(const AuthState()) {
+    _authSubscription = FirebaseAuth.instance.idTokenChanges().listen(
+      authChanged,
+    );
+  }
+
+  Future<void> authChanged(User? firebaseUser) async {
+    if (firebaseUser == null) {
+      // 未ログイン or トークン失効
+      state = const AuthState();
+      return;
+    }
+
+    final storageTenantId = await StorageService.instance.read(key: 'tenantId');
+    if (storageTenantId == null || storageTenantId.isEmpty) {
+      return;
+    }
+    final tenant = await _tenantRepository.firstByTenantId(storageTenantId);
+    if (tenant == null) {
+      state = const AuthState();
+      return;
+    }
+
+    final user = await _userRepository.firstByTenantIdAndUserId(
+      tenant.id,
+      firebaseUser.uid,
+    );
+    if (user == null) {
+      state = const AuthState();
+      return;
+    }
+
+    state = state.copyWith(
+      isSignIn: true,
+      user: AuthUser(
+        displayName: user.displayName,
+        email: firebaseUser.email ?? "",
+        photoURL: firebaseUser.photoURL ?? "",
+        tenantId: tenant.id,
+        userId: firebaseUser.uid,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   Future<void> createTenantAndUser({
     required String displayName,

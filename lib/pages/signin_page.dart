@@ -8,6 +8,7 @@ import 'package:pis_house_frontend/components/common/pis_text_field.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_join_exception.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
+import 'package:pis_house_frontend/infrastructures/storage.dart';
 
 class SigninPage extends HookConsumerWidget {
   const SigninPage({super.key});
@@ -20,7 +21,6 @@ class SigninPage extends HookConsumerWidget {
     final tenantNameController = useTextEditingController();
     final theme = Theme.of(context);
     final authService = ref.watch(authServiceProvider);
-    final isSigninButtonLoading = useState(false);
 
     return Scaffold(
       body: LayoutBuilder(
@@ -84,11 +84,9 @@ class SigninPage extends HookConsumerWidget {
                             Align(
                               alignment: Alignment.center,
                               child: PisButton(
-                                isLoading: isSigninButtonLoading.value,
                                 label: 'ログイン',
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
-                                    isSigninButtonLoading.value = true;
                                     final email = emailController.text;
                                     final password = passwordController.text;
                                     final tenantName =
@@ -98,6 +96,10 @@ class SigninPage extends HookConsumerWidget {
                                         email: email,
                                         password: password,
                                         tenantName: tenantName,
+                                      );
+                                      await StorageService.instance.write(
+                                        key: 'tenantId',
+                                        value: authService.user!.tenantId,
                                       );
                                       if (!context.mounted) return;
                                       context.go('/');
@@ -117,7 +119,6 @@ class SigninPage extends HookConsumerWidget {
                                         '不明なエラーが発生しました',
                                       ).show(context);
                                     }
-                                    isSigninButtonLoading.value = false;
                                   }
                                 },
                               ),

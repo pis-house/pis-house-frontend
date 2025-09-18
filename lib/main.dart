@@ -1,12 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 import 'package:pis_house_frontend/infrastructures/firebase_init.dart';
 import 'package:pis_house_frontend/route.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  runApp(const ProviderScope(child: MyApp()));
+  final container = ProviderContainer();
+  final authService = container.read(authServiceProvider);
+  await authService.authChanged(FirebaseAuth.instance.currentUser);
+  runApp(
+    ProviderScope(
+      overrides: [authServiceProvider.overrideWithValue(authService)],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {

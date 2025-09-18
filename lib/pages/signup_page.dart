@@ -11,6 +11,7 @@ import 'package:pis_house_frontend/exceptions/tenant_join_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_join_exception.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
+import 'package:pis_house_frontend/infrastructures/storage.dart';
 
 enum SignupTenantType { create, join }
 
@@ -115,7 +116,6 @@ class SignupPage extends HookConsumerWidget {
                               alignment: Alignment.center,
                               child: PisButton(
                                 label: 'アカウント登録',
-                                isLoading: isSignupButtonLoading.value,
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
                                     isSignupButtonLoading.value = true;
@@ -144,6 +144,10 @@ class SignupPage extends HookConsumerWidget {
                                               tenantName: tenantName,
                                             );
                                       }
+                                      await StorageService.instance.write(
+                                        key: 'tenantId',
+                                        value: authService.user!.tenantId,
+                                      );
                                       if (!context.mounted) return;
                                       context.go('/');
                                     } on TenantNotExistsException catch (e) {
