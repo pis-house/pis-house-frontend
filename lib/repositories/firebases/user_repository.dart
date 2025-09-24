@@ -7,7 +7,7 @@ class UserRepository implements UserRepositoryInterface {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   CollectionReference _rootRef(String tenantId) {
-    return _db.collection('users').doc(tenantId).collection('nodes');
+    return _db.collection("tenants").doc(tenantId).collection("users");
   }
 
   @override

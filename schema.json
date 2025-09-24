@@ -1,0 +1,11 @@
+{
+    "indoor_area": {
+        "area1": {
+            "device1": {
+                "id": "device1"
+            }
+        },
+        "area2": {},
+        "area3": {}
+    }
+}
