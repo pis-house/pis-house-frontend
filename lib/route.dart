@@ -55,3 +55,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     },
   );
 });
+
+CustomTransitionPage<T> createSlideUpTransitionPage<T>({
+  required LocalKey key,
+  required Widget child,
+  bool fullscreenDialog = true,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    fullscreenDialog: fullscreenDialog,
+    child: child,
+    transitionsBuilder:
+        (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,
+        ) {
+          final CurvedAnimation curvedAnimation = CurvedAnimation(
+            parent: animation,
+            curve: Curves.ease,
+            reverseCurve: Curves.ease,
+          );
+
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(curvedAnimation),
+            child: child,
+          );
+        },
+  );
+}

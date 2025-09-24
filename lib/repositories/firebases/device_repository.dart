@@ -6,13 +6,21 @@ import 'package:pis_house_frontend/schemas/device_model.dart';
 class DeviceRepository implements DeviceRepositoryInterface {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  CollectionReference _rootRef(String tenantId) {
-    return _db.collection('devices').doc(tenantId).collection('nodes');
+  CollectionReference _rootRef(String tenantId, String indoorAreaId) {
+    return _db
+        .collection("tenants")
+        .doc(tenantId)
+        .collection("indoor_areas")
+        .doc(indoorAreaId)
+        .collection("devices");
   }
 
   @override
-  Future<List<DeviceModel>> getByTenantId(String tenantId) async {
-    final snapshot = await _rootRef(tenantId).get();
+  Future<List<DeviceModel>> getByTenantId(
+    String tenantId,
+    String indoorAreaId,
+  ) async {
+    final snapshot = await _rootRef(tenantId, indoorAreaId).get();
     if (snapshot.size == 0) return [];
 
     return snapshot.docs.map((entry) {
@@ -22,23 +30,12 @@ class DeviceRepository implements DeviceRepositoryInterface {
   }
 
   @override
-  Stream<List<DeviceModel>> getSubscribeByTenantId(String tenantId) {
-    return _rootRef(tenantId).snapshots().map((querySnapshot) {
-      if (querySnapshot.size == 0) return [];
-
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data();
-        return DeviceModel.fromJson(data as Map<String, dynamic>);
-      }).toList();
-    });
-  }
-
-  @override
   Future<DeviceModel?> firstByTenantIdAndDeviceId(
     String tenantId,
+    String indoorAreaId,
     String deviceId,
   ) async {
-    final snapshot = await _rootRef(tenantId).doc(deviceId).get();
+    final snapshot = await _rootRef(tenantId, indoorAreaId).doc(deviceId).get();
     if (!snapshot.exists) return null;
     return DeviceModel.fromJson(
       Map<String, dynamic>.from(snapshot.data() as Map),
@@ -46,9 +43,13 @@ class DeviceRepository implements DeviceRepositoryInterface {
   }
 
   @override
-  Future<DeviceModel> create(String tenantId, DeviceModel device) async {
+  Future<DeviceModel> create(
+    String tenantId,
+    String indoorAreaId,
+    DeviceModel device,
+  ) async {
     final json = device.toJson();
-    final ref = _rootRef(tenantId).doc(device.id);
+    final ref = _rootRef(tenantId, indoorAreaId).doc(device.id);
     await ref.set(json);
     final snapshot = await ref.get();
     if (!snapshot.exists) {
@@ -58,8 +59,12 @@ class DeviceRepository implements DeviceRepositoryInterface {
   }
 
   @override
-  Future<void> delete(String tenantId, String deviceId) async {
-    final ref = _rootRef(tenantId).doc(deviceId);
+  Future<void> delete(
+    String tenantId,
+    String indoorAreaId,
+    String deviceId,
+  ) async {
+    final ref = _rootRef(tenantId, indoorAreaId).doc(deviceId);
     await ref.delete();
     var snapshot = await ref.get();
     if (snapshot.exists) {
@@ -68,14 +73,18 @@ class DeviceRepository implements DeviceRepositoryInterface {
   }
 
   @override
-  Future<DeviceModel> update(String tenantId, DeviceModel device) async {
-    final ref = _rootRef(tenantId).doc(device.id);
+  Future<DeviceModel> update(
+    String tenantId,
+    String indoorAreaId,
+    DeviceModel device,
+  ) async {
+    final ref = _rootRef(tenantId, indoorAreaId).doc(device.id);
     await ref.update(device.toJson());
     final snapshot = await ref.get();
     if (!snapshot.exists) {
       throw Exception('Failed to read device after update');
     }
-    return device;
+    return DeviceModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
 

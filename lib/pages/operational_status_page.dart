@@ -1,38 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pis_house_frontend/components/common/pis_base_header.dart';
+import 'package:pis_house_frontend/components/common/pis_button.dart';
 
-final counterProvider = StateProvider<int>((ref) => 0);
+final tabsProvider = StateProvider<List<String>>(
+  (ref) => ["リビング", "寝室", "トイレ"],
+);
 
 class OperationalStatusPage extends HookConsumerWidget {
   const OperationalStatusPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final localCounter = useState(0);
-    final globalCounter = ref.watch(counterProvider);
+    final theme = Theme.of(context);
+    final tabs = ref.watch(tabsProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Local & Global Counter')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: PisBaseHeader(title: "タイトル"),
+        body: Column(
           children: [
-            Text(
-              "Global: $globalCounter",
-              style: const TextStyle(fontSize: 30),
+            PreferredSize(
+              preferredSize: const Size.fromHeight(48.0),
+              child: Container(
+                color: theme.colorScheme.primary,
+                child: TabBar(
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white,
+                  indicatorColor: Colors.white,
+                  dividerColor: Colors.white,
+                  tabs: tabs.map((name) => Tab(text: name)).toList(),
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              "Local: ${localCounter.value}",
-              style: const TextStyle(fontSize: 30),
+            Expanded(
+              child: TabBarView(
+                children: tabs
+                    .map(
+                      (name) => Center(
+                        child: Text(name, style: const TextStyle(fontSize: 24)),
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                localCounter.value++;
-                ref.read(counterProvider.notifier).update((state) => state + 1);
-              },
-              child: const Text('カウント'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PisButton(
+                label: 'test',
+                onPressed: () async {
+                  ref
+                      .read(tabsProvider.notifier)
+                      .update((state) => [...state, "タブ${state.length + 1}"]);
+                  await Future.delayed(const Duration(seconds: 5));
+                },
+              ),
             ),
           ],
         ),

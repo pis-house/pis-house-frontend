@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 
 class TabPage extends HookConsumerWidget {
   const TabPage({super.key, required this.child});
   final Widget child;
 
   static final List<_TabInfo> _tabs = <_TabInfo>[
-    const _TabInfo(label: '稼働状況', icon: Icons.home, path: '/'),
-    const _TabInfo(label: '通知', icon: Icons.notifications, path: '/notice'),
-    const _TabInfo(label: '設定', icon: Icons.settings, path: '/setting'),
+    const _TabInfo(icon: Icons.home, path: '/'),
+    const _TabInfo(icon: Icons.notifications, path: '/notice'),
+    const _TabInfo(icon: Icons.settings, path: '/setting'),
   ];
 
   int _locationToTabIndex(String location) {
@@ -30,33 +29,8 @@ class TabPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).uri.toString();
     final currentIndex = _locationToTabIndex(location);
-    final theme = Theme.of(context);
-    final authService = ref.watch(authServiceProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_tabs[currentIndex].label),
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        backgroundColor: theme.primaryColor,
-        elevation: 4.0,
-        shadowColor: Colors.black26,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (String value) {
-              switch (value) {
-                case 'ログアウト':
-                  authService.signOut();
-                  context.go('/signin');
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(value: 'ログアウト', child: Text('ログアウト')),
-            ],
-          ),
-        ],
-      ),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -64,10 +38,8 @@ class TabPage extends HookConsumerWidget {
         currentIndex: currentIndex,
         items: _tabs
             .map(
-              (_TabInfo tab) => BottomNavigationBarItem(
-                icon: Icon(tab.icon),
-                label: tab.label,
-              ),
+              (_TabInfo tab) =>
+                  BottomNavigationBarItem(icon: Icon(tab.icon), label: ''),
             )
             .toList(),
         onTap: (int index) {
@@ -79,8 +51,7 @@ class TabPage extends HookConsumerWidget {
 }
 
 class _TabInfo {
-  const _TabInfo({required this.label, required this.icon, required this.path});
-  final String label;
+  const _TabInfo({required this.icon, required this.path});
   final IconData icon;
   final String path;
 }

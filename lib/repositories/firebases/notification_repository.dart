@@ -7,7 +7,11 @@ class NotificationRepository implements NotificationRepositoryInterface {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   DocumentReference _tenantRef(String tenantId) {
-    return _db.collection('notifications').doc(tenantId);
+    return _db
+        .collection("tenants")
+        .doc(tenantId)
+        .collection("notification")
+        .doc("node");
   }
 
   @override

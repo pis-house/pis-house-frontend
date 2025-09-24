@@ -33,7 +33,9 @@ class PisButton extends HookConsumerWidget {
         }
         isLoading.value = true;
         await Future.sync(() => onPressed!());
-        isLoading.value = false;
+        if (context.mounted) {
+          isLoading.value = false;
+        }
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
