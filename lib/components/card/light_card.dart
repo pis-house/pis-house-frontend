@@ -8,7 +8,6 @@ class LightCard extends HookConsumerWidget {
   final Function() onDelete;
   final Function() onEdit;
   final Function(bool) onIsActiveChanged;
-  final Function(double) onSliderValueChangeEnd;
   final Function(double) onSliderValueChanged;
   final String title;
 
@@ -19,7 +18,6 @@ class LightCard extends HookConsumerWidget {
     required this.onDelete,
     required this.onEdit,
     required this.onIsActiveChanged,
-    required this.onSliderValueChangeEnd,
     required this.onSliderValueChanged,
     required this.title,
   });
@@ -39,7 +37,6 @@ class LightCard extends HookConsumerWidget {
       onDelete: onDelete,
       onEdit: onEdit,
       onIsActiveChanged: onIsActiveChanged,
-      onSliderValueChangeEnd: onSliderValueChangeEnd,
       onSliderValueChanged: onSliderValueChanged,
     );
   }

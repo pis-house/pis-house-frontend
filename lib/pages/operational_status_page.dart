@@ -26,7 +26,6 @@ class OperationalStatusPage extends HookConsumerWidget {
         .getSubscribeByTenantId(authService.user!.tenantId);
     final deviceRepository = ref.watch(deviceRepositoryProvider);
     final currentIndoorArea = useState<IndoorAreaModel?>(null);
-    final deviceIdToDeviceSliders = useState<Map<String, double>>({});
 
     return StreamBuilder(
       stream: indoorSubscriptionModels,
@@ -237,22 +236,12 @@ class OperationalStatusPage extends HookConsumerWidget {
 
                           final device = devicesInArea[deviceIndex - 1];
 
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (context.mounted) {
-                              deviceIdToDeviceSliders.value[device.id] =
-                                  device.type == 'light'
-                                  ? device.lightBrightnessPercent.toDouble()
-                                  : device.airconTemperature.toDouble();
-                            }
-                          });
-
                           return switch (device.type) {
                             'light' => LightCard(
                               title: device.name,
                               isActive: device.isActive,
-                              brightness:
-                                  deviceIdToDeviceSliders.value[device.id] ??
-                                  25,
+                              brightness: device.lightBrightnessPercent
+                                  .toDouble(),
                               onIsActiveChanged: (isActive) async {
                                 await deviceRepository.update(
                                   authService.user!.tenantId,
@@ -269,14 +258,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                                   ),
                                 );
                               },
-                              onSliderValueChanged: (finalValue) {
-                                final updatedMap = {
-                                  ...deviceIdToDeviceSliders.value,
-                                };
-                                updatedMap[device.id] = finalValue;
-                                deviceIdToDeviceSliders.value = updatedMap;
-                              },
-                              onSliderValueChangeEnd: (brightness) async {
+                              onSliderValueChanged: (brightness) async {
                                 await deviceRepository.update(
                                   authService.user!.tenantId,
                                   area.indoorArea.id,
@@ -299,9 +281,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                             'aircon' => AirconCard(
                               title: device.name,
                               isActive: device.isActive,
-                              temperature:
-                                  deviceIdToDeviceSliders.value[device.id] ??
-                                  25,
+                              temperature: device.airconTemperature,
                               onIsActiveChanged: (isActive) async {
                                 await deviceRepository.update(
                                   authService.user!.tenantId,
@@ -318,14 +298,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                                   ),
                                 );
                               },
-                              onSliderValueChanged: (finalValue) {
-                                final updatedMap = {
-                                  ...deviceIdToDeviceSliders.value,
-                                };
-                                updatedMap[device.id] = finalValue;
-                                deviceIdToDeviceSliders.value = updatedMap;
-                              },
-                              onSliderValueChangeEnd: (temperature) async {
+                              onSliderValueChanged: (temperature) async {
                                 await deviceRepository.update(
                                   authService.user!.tenantId,
                                   area.indoorArea.id,

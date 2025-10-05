@@ -10,7 +10,6 @@ class DeviceCard extends HookConsumerWidget {
   final Function() onEdit;
   final Function(double) onSliderValueChanged;
   final Function(bool) onIsActiveChanged;
-  final Function(double) onSliderValueChangeEnd;
   final IconData sliderIcon;
   final double sliderValue;
   final String title;
@@ -26,7 +25,6 @@ class DeviceCard extends HookConsumerWidget {
     required this.onEdit,
     required this.onSliderValueChanged,
     required this.onIsActiveChanged,
-    required this.onSliderValueChangeEnd,
     required this.sliderIcon,
     required this.title,
     required this.titleIcon,
@@ -93,7 +91,6 @@ class DeviceCard extends HookConsumerWidget {
                         value: sliderValue,
                         min: minSliderValue,
                         max: maxSliderValue,
-                        onChangeEnd: onSliderValueChangeEnd,
                         onChanged: onSliderValueChanged,
                         divisions:
                             ((maxSliderValue - minSliderValue) / interval)

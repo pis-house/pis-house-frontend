@@ -7,7 +7,6 @@ class AirconCard extends HookConsumerWidget {
   final Function() onDelete;
   final Function() onEdit;
   final Function(bool) onIsActiveChanged;
-  final Function(double) onSliderValueChangeEnd;
   final Function(double) onSliderValueChanged;
   final double temperature;
   final String title;
@@ -18,7 +17,6 @@ class AirconCard extends HookConsumerWidget {
     required this.onDelete,
     required this.onEdit,
     required this.onIsActiveChanged,
-    required this.onSliderValueChangeEnd,
     required this.onSliderValueChanged,
     required this.temperature,
     required this.title,
@@ -38,7 +36,6 @@ class AirconCard extends HookConsumerWidget {
       interval: 0.5,
       onDelete: onDelete,
       onEdit: onEdit,
-      onSliderValueChangeEnd: onSliderValueChangeEnd,
       onIsActiveChanged: onIsActiveChanged,
       onSliderValueChanged: onSliderValueChanged,
     );
