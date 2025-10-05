@@ -8,6 +8,8 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
   final List<Widget>? extraActions;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final double? leadingWidth;
+  final bool showAction;
 
   const PisBaseHeader({
     super.key,
@@ -15,6 +17,8 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
     this.extraActions,
     this.backgroundColor,
     this.foregroundColor,
+    this.leadingWidth,
+    this.showAction = true,
   });
 
   @override
@@ -26,23 +30,28 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
       centerTitle: true,
       backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
       foregroundColor: foregroundColor ?? Colors.white,
-      actions: [
-        PopupMenuButton<String>(
-          onSelected: (String value) {
-            switch (value) {
-              case 'ログアウト':
-                authService.signOut();
-                context.go('/signin');
-                break;
-            }
-          },
-          itemBuilder: (BuildContext context) => const [
-            PopupMenuItem<String>(value: 'ログアウト', child: Text('ログアウト')),
-          ],
-        ),
-        // 画面ごとの差分アクション
-        if (extraActions != null) ...extraActions!,
-      ],
+
+      leading: extraActions != null
+          ? Row(mainAxisSize: MainAxisSize.min, children: extraActions!)
+          : null,
+      leadingWidth: leadingWidth,
+      actions: showAction
+          ? [
+              PopupMenuButton<String>(
+                onSelected: (String value) {
+                  switch (value) {
+                    case 'ログアウト':
+                      authService.signOut();
+                      context.go('/signin');
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => const [
+                  PopupMenuItem<String>(value: 'ログアウト', child: Text('ログアウト')),
+                ],
+              ),
+            ]
+          : [],
     );
   }
 
