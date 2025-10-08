@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/components/common/pis_button.dart';
 import 'package:pis_house_frontend/components/common/pis_error_snack_bar.dart';
-import 'package:pis_house_frontend/components/common/pis_text_field.dart';
+import 'package:pis_house_frontend/components/common/pis_text_form_field.dart';
 import 'package:pis_house_frontend/exceptions/tenant_exists_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_join_exception.dart';
 import 'package:pis_house_frontend/exceptions/tenant_not_exists_exception.dart';

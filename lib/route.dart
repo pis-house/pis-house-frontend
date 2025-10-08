@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
+import 'package:pis_house_frontend/pages/create_device_page.dart';
+import 'package:pis_house_frontend/pages/create_indoor_area_page.dart';
+import 'package:pis_house_frontend/pages/edit_indoor_area_page.dart';
 import 'package:pis_house_frontend/pages/notice_page.dart';
 import 'package:pis_house_frontend/pages/operational_status_page.dart';
 import 'package:pis_house_frontend/pages/setting_page.dart';
@@ -42,6 +45,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/signup',
         pageBuilder: (context, state) =>
             const NoTransitionPage(child: SignupPage()),
+      ),
+      GoRoute(
+        path: '/create-indoor-area',
+        pageBuilder: (context, state) =>
+            MaterialPage(child: CreateIndoorAreaPage()),
+      ),
+      GoRoute(
+        path: '/edit-indoor-area/:areaId',
+        pageBuilder: (context, state) {
+          final areaId = state.pathParameters['areaId']!;
+          return MaterialPage(child: EditIndoorAreaPage(indoorAreaId: areaId));
+        },
+      ),
+      GoRoute(
+        path: '/indoor-area/:areaId/create-device',
+        pageBuilder: (context, state) {
+          final areaId = state.pathParameters['areaId']!;
+          return MaterialPage(child: CreateDevicePage(indoorAreaId: areaId));
+        },
       ),
     ],
     redirect: (context, state) {

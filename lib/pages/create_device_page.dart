@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/components/common/pis_base_header.dart';
-import 'package:pis_house_frontend/components/form/indoor_area_form.dart';
+import 'package:pis_house_frontend/components/form/device_form.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
-import 'package:pis_house_frontend/repositories/firebases/indoor_area_repository.dart';
-import 'package:pis_house_frontend/schemas/indoor_area_model.dart';
+import 'package:pis_house_frontend/repositories/firebases/device_repository.dart';
+import 'package:pis_house_frontend/schemas/device_model.dart';
 
-class CreateIndoorAreaPage extends HookConsumerWidget {
-  const CreateIndoorAreaPage({super.key});
+class CreateDevicePage extends HookConsumerWidget {
+  final String indoorAreaId;
+  const CreateDevicePage({super.key, required this.indoorAreaId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final indoorAreaRepository = ref.watch(indoorAreaRepositoryProvider);
+    final deviceRepository = ref.watch(deviceRepositoryProvider);
     final authProvider = ref.watch(authServiceProvider);
 
     return Scaffold(
@@ -26,15 +27,22 @@ class CreateIndoorAreaPage extends HookConsumerWidget {
           ),
         ],
         showAction: false,
-        title: "エリア作成",
+        title: "デバイス作成",
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return IndoorAreaForm(
-            onSave: (newIndoorArea) async {
-              await indoorAreaRepository.create(
+          return DeviceForm(
+            onSave: (formData) async {
+              await deviceRepository.create(
                 authProvider.user!.tenantId,
-                IndoorAreaModel.create(newIndoorArea),
+                indoorAreaId,
+                DeviceModel.create(
+                  name: formData.name,
+                  type: formData.type,
+                  airconTemperature: formData.type == 'aircon' ? 25 : 0,
+                  isActive: false,
+                  lightBrightnessPercent: formData.type == 'light' ? 50 : 0,
+                ),
               );
               if (!context.mounted) return;
               context.pop();

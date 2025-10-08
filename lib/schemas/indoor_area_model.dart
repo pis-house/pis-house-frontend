@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pis_house_frontend/schemas/device_model.dart';
 import 'package:ulid/ulid.dart';
 
 part 'indoor_area_model.g.dart';

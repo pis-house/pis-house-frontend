@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/repositories/interfaces/indoor_area_repository_interface.dart';
+import 'package:pis_house_frontend/schemas/device_model.dart';
 import 'package:pis_house_frontend/schemas/indoor_area_model.dart';
+import 'package:pis_house_frontend/schemas/indoor_area_subscription_model.dart';
+import 'package:rxdart/rxdart.dart';
 
 class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -20,16 +24,38 @@ class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
   }
 
   @override
-  Stream<List<IndoorAreaModel>> getSubscribeByTenantIdAndIndoorAreaId(
+  Stream<List<IndoorAreaSubscriptionModel>> getSubscribeByTenantId(
     String tenantId,
   ) {
-    return _rootRef(tenantId).snapshots().map((querySnapshot) {
-      if (querySnapshot.size == 0) return [];
+    return _rootRef(tenantId).snapshots().switchMap((indoorAreasSnapshot) {
+      if (indoorAreasSnapshot.docs.isEmpty) {
+        return Stream.value([]);
+      }
+      final deviceStreams = indoorAreasSnapshot.docs.map((areaDoc) {
+        final indoorArea = IndoorAreaModel.fromJson(
+          areaDoc.data() as Map<String, dynamic>,
+        );
 
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data();
-        return IndoorAreaModel.fromJson(data as Map<String, dynamic>);
+        return _rootRef(tenantId)
+            .doc(indoorArea.id)
+            .collection("devices")
+            .snapshots()
+            .map((devicesSnapshot) {
+              final devices = devicesSnapshot.docs.map((deviceDoc) {
+                return DeviceModel.fromJson(deviceDoc.data());
+              }).toList();
+
+              return IndoorAreaSubscriptionModel(
+                devices: devices,
+                indoorArea: indoorArea,
+              );
+            });
       }).toList();
+
+      return Rx.combineLatest(
+        deviceStreams,
+        (List<IndoorAreaSubscriptionModel> subscriptions) => subscriptions,
+      );
     });
   }
 
@@ -72,3 +98,7 @@ class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
     return IndoorAreaModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }
 }
+
+final indoorAreaRepositoryProvider = Provider<IndoorAreaRepositoryInterface>(
+  (ref) => IndoorAreaRepository(),
+);
