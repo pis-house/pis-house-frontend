@@ -348,11 +348,44 @@ class OperationalStatusPage extends HookConsumerWidget {
                                   ),
                                 );
                               },
-                              onEdit: () => PisErrorSnackBar(
-                                'エアコンの設定を編集します',
-                              ).show(context),
-                              onDelete: () =>
-                                  PisErrorSnackBar('エアコンを削除します').show(context),
+                              onEdit: () => context.push(
+                                '/indoor-area/${area.indoorArea.id}/edit-device/${device.id}',
+                              ),
+                              onDelete: () async {
+                                final bool? didConfirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('確認'),
+                                      content: Text(
+                                        '${device.name}を本当に削除しますか？\nこの操作は元に戻せません。',
+                                      ),
+                                      actions: <Widget>[
+                                        PisTextButton(
+                                          label: 'キャンセル',
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                        ),
+                                        PisTextButton(
+                                          color: Colors.red,
+                                          label: '削除',
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                if (didConfirm == true) {
+                                  await deviceRepository.delete(
+                                    authService.user!.tenantId,
+                                    currentIndoorArea.value!.id,
+                                    device.id,
+                                  );
+                                }
+                              },
                             ),
                             _ => null,
                           };

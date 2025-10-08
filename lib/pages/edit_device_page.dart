@@ -70,6 +70,7 @@ class EditDevicePage extends HookConsumerWidget {
           body: LayoutBuilder(
             builder: (context, constraints) {
               return DeviceForm(
+                initialData: data,
                 onSave: (formData) async {
                   await deviceRepository.update(
                     authProvider.user!.tenantId,
