@@ -30,7 +30,7 @@ class DeviceRepository implements DeviceRepositoryInterface {
   }
 
   @override
-  Future<DeviceModel?> firstByTenantIdAndDeviceId(
+  Future<DeviceModel?> firstByTenantIdAndIndoorAreaIdAndDeviceId(
     String tenantId,
     String indoorAreaId,
     String deviceId,

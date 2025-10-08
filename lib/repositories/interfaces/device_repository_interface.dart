@@ -2,7 +2,7 @@ import 'package:pis_house_frontend/schemas/device_model.dart';
 
 abstract class DeviceRepositoryInterface {
   Future<List<DeviceModel>> getByTenantId(String tenantId, String indoorAreaId);
-  Future<DeviceModel?> firstByTenantIdAndDeviceId(
+  Future<DeviceModel?> firstByTenantIdAndIndoorAreaIdAndDeviceId(
     String tenantId,
     String indoorAreaId,
     String deviceId,

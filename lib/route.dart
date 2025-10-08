@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 import 'package:pis_house_frontend/pages/create_device_page.dart';
 import 'package:pis_house_frontend/pages/create_indoor_area_page.dart';
+import 'package:pis_house_frontend/pages/edit_device_page.dart';
 import 'package:pis_house_frontend/pages/edit_indoor_area_page.dart';
 import 'package:pis_house_frontend/pages/notice_page.dart';
 import 'package:pis_house_frontend/pages/operational_status_page.dart';
@@ -63,6 +64,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) {
           final areaId = state.pathParameters['areaId']!;
           return MaterialPage(child: CreateDevicePage(indoorAreaId: areaId));
+        },
+      ),
+      GoRoute(
+        path: '/indoor-area/:areaId/edit-device/:deviceId',
+        pageBuilder: (context, state) {
+          final areaId = state.pathParameters['areaId']!;
+          final deviceId = state.pathParameters['deviceId']!;
+          return MaterialPage(
+            child: EditDevicePage(deviceId: deviceId, indoorAreaId: areaId),
+          );
         },
       ),
     ],

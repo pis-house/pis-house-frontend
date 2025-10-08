@@ -39,9 +39,9 @@ class CreateDevicePage extends HookConsumerWidget {
                 DeviceModel.create(
                   name: formData.name,
                   type: formData.type,
-                  airconTemperature: formData.type == 'aircon' ? 25 : 0,
+                  airconTemperature: 25,
                   isActive: false,
-                  lightBrightnessPercent: formData.type == 'light' ? 50 : 0,
+                  lightBrightnessPercent: 50,
                 ),
               );
               if (!context.mounted) return;
