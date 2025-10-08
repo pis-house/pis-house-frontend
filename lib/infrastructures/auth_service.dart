@@ -28,6 +28,22 @@ class AuthUser {
     this.tenantId = "",
     this.userId = "",
   });
+
+  AuthUser copyWith({
+    String? displayName,
+    String? email,
+    String? photoURL,
+    String? tenantId,
+    String? userId,
+  }) {
+    return AuthUser(
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      photoURL: photoURL ?? this.photoURL,
+      tenantId: tenantId ?? this.tenantId,
+      userId: userId ?? this.userId,
+    );
+  }
 }
 
 class AuthState {
@@ -102,6 +118,35 @@ class AuthService extends StateNotifier<AuthState> {
   void dispose() {
     _authSubscription.cancel();
     super.dispose();
+  }
+
+  Future<void> changeDisplayName({required String newDisplayName}) async {
+    if (!state.isSignIn || state.user == null) {
+      throw Exception('User is not signed in.');
+    }
+    final currentUser = await _userRepository.firstByTenantIdAndUserId(
+      state.user!.tenantId,
+      state.user!.userId,
+    );
+    if (currentUser == null) {
+      throw Exception('User is not found.');
+    }
+
+    await _userRepository.update(
+      state.user!.tenantId,
+      UserModel.update(
+        id: currentUser.id,
+        displayName: newDisplayName,
+        isAdmin: currentUser.isAdmin,
+        preferredAirconTemperature: currentUser.preferredAirconTemperature,
+        preferredLightBrightnessPercent:
+            currentUser.preferredLightBrightnessPercent,
+        createdAt: currentUser.createdAt,
+      ),
+    );
+
+    final updatedAuthUser = state.user!.copyWith(displayName: newDisplayName);
+    state = state.copyWith(user: updatedAuthUser);
   }
 
   Future<void> createTenantAndUser({

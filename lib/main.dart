@@ -25,18 +25,14 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
-    const ColorScheme defaultColors = ColorScheme.light(
-      primary: Colors.blue,
-      onPrimary: Colors.blueGrey,
-      primaryContainer: Colors.blue,
-      onPrimaryContainer: Colors.blueGrey,
-      secondary: Colors.cyanAccent,
-      onSecondary: Colors.cyan,
-      error: Colors.redAccent,
+
+    ColorScheme defaultColors = ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.dark,
     );
+
     return MaterialApp.router(
       title: 'PisHouseApp',
-      themeMode: ThemeMode.light,
       routerConfig: router,
       theme: ThemeData(
         colorScheme: defaultColors,
