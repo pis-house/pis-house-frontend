@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/components/card/aircon_card.dart';
 import 'package:pis_house_frontend/components/common/pis_base_header.dart';
 import 'package:pis_house_frontend/components/common/pis_button.dart';
-import 'package:pis_house_frontend/components/common/pis_error_snack_bar.dart';
 import 'package:pis_house_frontend/components/card/light_card.dart';
 import 'package:pis_house_frontend/components/common/pis_text_button.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
