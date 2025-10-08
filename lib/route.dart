@@ -6,6 +6,7 @@ import 'package:pis_house_frontend/pages/create_device_page.dart';
 import 'package:pis_house_frontend/pages/create_indoor_area_page.dart';
 import 'package:pis_house_frontend/pages/edit_device_page.dart';
 import 'package:pis_house_frontend/pages/edit_indoor_area_page.dart';
+import 'package:pis_house_frontend/pages/member_list_page.dart';
 import 'package:pis_house_frontend/pages/notice_page.dart';
 import 'package:pis_house_frontend/pages/operational_status_page.dart';
 import 'package:pis_house_frontend/pages/setting_page.dart';
@@ -29,6 +30,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: '/notice',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const MaterialPage(child: NoticePage()),
+          ),
+          GoRoute(
+            path: '/member',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const MaterialPage(child: MemberListPage()),
           ),
           GoRoute(
             path: '/setting',
