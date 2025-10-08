@@ -9,6 +9,7 @@ class TabPage extends HookConsumerWidget {
   static final List<_TabInfo> _tabs = <_TabInfo>[
     const _TabInfo(icon: Icons.home, path: '/'),
     const _TabInfo(icon: Icons.notifications, path: '/notice'),
+    const _TabInfo(icon: Icons.group, path: '/member'),
     const _TabInfo(icon: Icons.settings, path: '/setting'),
   ];
 
