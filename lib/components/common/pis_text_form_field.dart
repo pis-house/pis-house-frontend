@@ -8,6 +8,7 @@ class PisTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
   final TextEditingController? controller;
+  final bool enabled;
 
   const PisTextFormField({
     super.key,
@@ -18,6 +19,7 @@ class PisTextFormField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.controller,
+    this.enabled = true,
   });
 
   @override
@@ -29,7 +31,11 @@ class PisTextFormField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 4),
           SizedBox(
@@ -39,6 +45,7 @@ class PisTextFormField extends StatelessWidget {
               obscureText: obscureText,
               validator: validator,
               onSaved: onSaved,
+              enabled: enabled,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade400),

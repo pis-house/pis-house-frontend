@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
+import 'package:pis_house_frontend/pages/account_setting_page.dart';
 import 'package:pis_house_frontend/pages/create_device_page.dart';
 import 'package:pis_house_frontend/pages/create_indoor_area_page.dart';
 import 'package:pis_house_frontend/pages/edit_device_page.dart';
 import 'package:pis_house_frontend/pages/edit_indoor_area_page.dart';
+import 'package:pis_house_frontend/pages/edit_user_name_page.dart';
 import 'package:pis_house_frontend/pages/member_list_page.dart';
 import 'package:pis_house_frontend/pages/notice_page.dart';
 import 'package:pis_house_frontend/pages/operational_status_page.dart';
@@ -13,6 +15,7 @@ import 'package:pis_house_frontend/pages/setting_page.dart';
 import 'package:pis_house_frontend/pages/signin_page.dart';
 import 'package:pis_house_frontend/pages/signup_page.dart';
 import 'package:pis_house_frontend/pages/tab_page.dart';
+import 'package:pis_house_frontend/pages/theme_setting_page.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -40,6 +43,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: '/setting',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const MaterialPage(child: SettingPage()),
+          ),
+          GoRoute(
+            path: '/account-setting',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const MaterialPage(child: AccountSettingPage()),
+          ),
+          GoRoute(
+            path: '/edit-username',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const MaterialPage(child: EditUserNamePage()),
+          ),
+          GoRoute(
+            path: '/theme-setting',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const MaterialPage(child: ThemeSettingPage()),
           ),
         ],
       ),

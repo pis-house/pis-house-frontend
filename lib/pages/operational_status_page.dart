@@ -83,6 +83,7 @@ class OperationalStatusPage extends HookConsumerWidget {
           child: Scaffold(
             appBar: PisBaseHeader(
               leadingWidth: 150,
+              showDarkModeUnderline: false,
               extraActions: [
                 IconButton(
                   icon: const Icon(Icons.add),
@@ -156,7 +157,9 @@ class OperationalStatusPage extends HookConsumerWidget {
                   child: Column(
                     children: [
                       Container(
-                        color: theme.colorScheme.primary,
+                        color: theme.brightness == Brightness.light
+                            ? theme.colorScheme.primary
+                            : null,
                         child: TabBar(
                           isScrollable: true,
                           tabAlignment: TabAlignment.start,

@@ -44,7 +44,6 @@ class DeviceForm extends HookConsumerWidget {
                   (value == null || value.isEmpty) ? 'デバイス名を入力してください。' : null,
             ),
             const SizedBox(height: 32),
-
             PisDropdownButton<String>(
               label: '種類',
               value: selectDeviceType.value,
