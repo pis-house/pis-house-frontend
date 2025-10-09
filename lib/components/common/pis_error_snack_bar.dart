@@ -10,7 +10,7 @@ class PisErrorSnackBar {
         content: Text(
           message,
           style: const TextStyle(
-            color: Colors.white70,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -19,7 +19,7 @@ class PisErrorSnackBar {
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: '閉じる',
-          textColor: Colors.white70,
+          textColor: Colors.white,
           onPressed: () {},
         ),
       ),
