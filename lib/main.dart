@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 import 'package:pis_house_frontend/infrastructures/firebase_init.dart';
+import 'package:pis_house_frontend/infrastructures/storage.dart';
 import 'package:pis_house_frontend/route.dart';
+import 'package:pis_house_frontend/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,9 +14,33 @@ void main() async {
   final container = ProviderContainer();
   final authService = container.read(authServiceProvider);
   await authService.authChanged(FirebaseAuth.instance.currentUser);
+  final themeDataColorSchemeNotifier = container.read(
+    themeDataColorSchemeProvider.notifier,
+  );
+  final brightness = await StorageService.instance.read(key: 'brightness');
+  final seedColor = await StorageService.instance.read(key: 'seedColor');
+  if (brightness == 'Brightness.dark') {
+    themeDataColorSchemeNotifier.darkMode();
+  } else {
+    themeDataColorSchemeNotifier.lightMode();
+  }
+  if (seedColor != null) {
+    final color = seedColor.toColor();
+    if (color != null) {
+      themeDataColorSchemeNotifier.changeSeedColor(color);
+    }
+  }
+
+  print(seedColor);
+
   runApp(
     ProviderScope(
-      overrides: [authServiceProvider.overrideWithValue(authService)],
+      overrides: [
+        authServiceProvider.overrideWithValue(authService),
+        themeDataColorSchemeProvider.overrideWith(
+          (ref) => themeDataColorSchemeNotifier,
+        ),
+      ],
       child: MyApp(),
     ),
   );
@@ -25,10 +52,11 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
+    final themeDataColorScheme = ref.watch(themeDataColorSchemeProvider);
 
     ColorScheme defaultColors = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
-      brightness: Brightness.dark,
+      seedColor: themeDataColorScheme.seedColor,
+      brightness: themeDataColorScheme.brightness,
     );
 
     return MaterialApp.router(

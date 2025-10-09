@@ -83,6 +83,7 @@ class OperationalStatusPage extends HookConsumerWidget {
           child: Scaffold(
             appBar: PisBaseHeader(
               leadingWidth: 150,
+              showDarkModeUnderline: false,
               extraActions: [
                 IconButton(
                   icon: const Icon(Icons.add),

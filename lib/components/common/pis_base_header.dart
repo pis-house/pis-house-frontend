@@ -10,6 +10,7 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
   final Color? foregroundColor;
   final double? leadingWidth;
   final bool showAction;
+  final bool showDarkModeUnderline;
 
   const PisBaseHeader({
     super.key,
@@ -19,18 +20,22 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
     this.foregroundColor,
     this.leadingWidth,
     this.showAction = true,
+    this.showDarkModeUnderline = true,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authService = ref.watch(authServiceProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return AppBar(
       title: Text(title),
       centerTitle: true,
       backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
       foregroundColor: foregroundColor ?? Colors.white,
-
+      shape: isDarkMode && showDarkModeUnderline
+          ? const Border(bottom: BorderSide(color: Colors.white, width: 1.0))
+          : null,
       leading: extraActions != null
           ? Row(mainAxisSize: MainAxisSize.min, children: extraActions!)
           : null,
