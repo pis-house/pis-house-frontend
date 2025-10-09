@@ -163,10 +163,10 @@ class OperationalStatusPage extends HookConsumerWidget {
                         child: TabBar(
                           isScrollable: true,
                           tabAlignment: TabAlignment.start,
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.white,
-                          indicatorColor: Colors.white,
-                          dividerColor: Colors.white,
+                          labelColor: Colors.white70,
+                          unselectedLabelColor: Colors.white70,
+                          indicatorColor: Colors.white70,
+                          dividerColor: Colors.white70,
                           tabs: indoorAreas
                               .map((area) => Tab(text: area.indoorArea.name))
                               .toList(),

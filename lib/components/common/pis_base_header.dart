@@ -32,9 +32,9 @@ class PisBaseHeader extends HookConsumerWidget implements PreferredSizeWidget {
       title: Text(title),
       centerTitle: true,
       backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-      foregroundColor: foregroundColor ?? Colors.white,
+      foregroundColor: foregroundColor ?? Colors.white70,
       shape: isDarkMode && showDarkModeUnderline
-          ? const Border(bottom: BorderSide(color: Colors.white, width: 1.0))
+          ? const Border(bottom: BorderSide(color: Colors.white70, width: 1.0))
           : null,
       leading: extraActions != null
           ? Row(mainAxisSize: MainAxisSize.min, children: extraActions!)

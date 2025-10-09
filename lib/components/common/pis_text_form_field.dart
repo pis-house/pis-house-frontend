@@ -24,6 +24,9 @@ class PisTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return SizedBox(
       width: width ?? double.infinity,
       child: Column(
@@ -34,7 +37,7 @@ class PisTextFormField extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
-              color: Colors.black87,
+              color: isDarkMode ? Colors.white70 : Colors.black87,
             ),
           ),
           const SizedBox(height: 4),
