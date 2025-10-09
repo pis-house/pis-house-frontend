@@ -140,7 +140,9 @@ class SigninPage extends HookConsumerWidget {
                                     fontSize: 14,
                                     decoration: TextDecoration.underline,
                                     decorationColor: theme.primaryColor,
-                                    color: theme.primaryColor,
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.white70
+                                        : theme.primaryColor,
                                   ),
                                 ),
                               ),

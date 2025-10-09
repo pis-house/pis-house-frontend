@@ -20,12 +20,16 @@ class PisButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isLoading = useState(false);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     final button = ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: theme.primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor: Colors.white70,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        side: isDarkMode
+            ? const BorderSide(color: Colors.white70, width: 1.0)
+            : BorderSide.none,
       ),
       onPressed: () async {
         if (onPressed == null) {
@@ -46,7 +50,7 @@ class PisButton extends HookConsumerWidget {
               width: (height ?? 40) * 0.5,
               height: (height ?? 40) * 0.5,
               child: const CircularProgressIndicator(
-                color: Colors.white,
+                color: Colors.white70,
                 strokeWidth: 2,
               ),
             ),
