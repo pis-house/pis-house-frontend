@@ -41,53 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAgmhApvWMi6fzgSLYh64nUIUXnK-CJJw0',
-    appId: '1:270304561393:web:b042ccff42a72204d44150',
-    messagingSenderId: '270304561393',
-    projectId: 'pis-house',
-    authDomain: 'pis-house.firebaseapp.com',
-    databaseURL: 'https://pis-house-default-rtdb.firebaseio.com',
-    storageBucket: 'pis-house.firebasestorage.app',
-    measurementId: 'G-BSSN21D9EF',
+    apiKey: 'AIzaSyDqRMcVzkIB2VE0mLTDbaLKWWTcPuO7_nY',
+    appId: '1:376004147659:web:84a929098d0d3133121e4e',
+    messagingSenderId: '376004147659',
+    projectId: 'pis-house-3612e',
+    authDomain: 'pis-house-3612e.firebaseapp.com',
+    storageBucket: 'pis-house-3612e.firebasestorage.app',
+    measurementId: 'G-HZ3ZVF7SHY',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDuoTbIPK9b-I0qHBCuBoLuACWKTNvHvYM',
-    appId: '1:270304561393:android:b6e8eef8e095fb05d44150',
-    messagingSenderId: '270304561393',
-    projectId: 'pis-house',
-    databaseURL: 'https://pis-house-default-rtdb.firebaseio.com',
-    storageBucket: 'pis-house.firebasestorage.app',
+    apiKey: 'AIzaSyANbvHOmPxbBCzcWcCsZy2RAKsgfc5rcK8',
+    appId: '1:376004147659:android:63baaed004823310121e4e',
+    messagingSenderId: '376004147659',
+    projectId: 'pis-house-3612e',
+    storageBucket: 'pis-house-3612e.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBXrwQ4QUdq3_aXAMoYyJ65Fa2voMGENLI',
-    appId: '1:270304561393:ios:02428bc83cc9b10dd44150',
-    messagingSenderId: '270304561393',
-    projectId: 'pis-house',
-    databaseURL: 'https://pis-house-default-rtdb.firebaseio.com',
-    storageBucket: 'pis-house.firebasestorage.app',
+    apiKey: 'AIzaSyDqCaHLV5GgqnkDShZX2jswmOeEW0QDWOs',
+    appId: '1:376004147659:ios:4d9424e383a05d38121e4e',
+    messagingSenderId: '376004147659',
+    projectId: 'pis-house-3612e',
+    storageBucket: 'pis-house-3612e.firebasestorage.app',
     iosBundleId: 'com.example.pisHouseFrontend',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBXrwQ4QUdq3_aXAMoYyJ65Fa2voMGENLI',
-    appId: '1:270304561393:ios:02428bc83cc9b10dd44150',
-    messagingSenderId: '270304561393',
-    projectId: 'pis-house',
-    databaseURL: 'https://pis-house-default-rtdb.firebaseio.com',
-    storageBucket: 'pis-house.firebasestorage.app',
+    apiKey: 'AIzaSyDqCaHLV5GgqnkDShZX2jswmOeEW0QDWOs',
+    appId: '1:376004147659:ios:4d9424e383a05d38121e4e',
+    messagingSenderId: '376004147659',
+    projectId: 'pis-house-3612e',
+    storageBucket: 'pis-house-3612e.firebasestorage.app',
     iosBundleId: 'com.example.pisHouseFrontend',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAgmhApvWMi6fzgSLYh64nUIUXnK-CJJw0',
-    appId: '1:270304561393:web:01b872dccde591d4d44150',
-    messagingSenderId: '270304561393',
-    projectId: 'pis-house',
-    authDomain: 'pis-house.firebaseapp.com',
-    databaseURL: 'https://pis-house-default-rtdb.firebaseio.com',
-    storageBucket: 'pis-house.firebasestorage.app',
-    measurementId: 'G-N4310PX3R4',
+    apiKey: 'AIzaSyDqRMcVzkIB2VE0mLTDbaLKWWTcPuO7_nY',
+    appId: '1:376004147659:web:a58fe86e5ecbbea2121e4e',
+    messagingSenderId: '376004147659',
+    projectId: 'pis-house-3612e',
+    authDomain: 'pis-house-3612e.firebaseapp.com',
+    storageBucket: 'pis-house-3612e.firebasestorage.app',
+    measurementId: 'G-4P52F99GRW',
   );
+
 }

@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBXrwQ4QUdq3_aXAMoYyJ65Fa2voMGENLI</string>
+	<string>AIzaSyDqCaHLV5GgqnkDShZX2jswmOeEW0QDWOs</string>
 	<key>GCM_SENDER_ID</key>
-	<string>270304561393</string>
+	<string>376004147659</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.pisHouseFrontend</string>
 	<key>PROJECT_ID</key>
-	<string>pis-house</string>
+	<string>pis-house-3612e</string>
 	<key>STORAGE_BUCKET</key>
-	<string>pis-house.firebasestorage.app</string>
+	<string>pis-house-3612e.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,8 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:270304561393:ios:02428bc83cc9b10dd44150</string>
-	<key>DATABASE_URL</key>
-	<string>https://pis-house-default-rtdb.firebaseio.com</string>
+	<string>1:376004147659:ios:4d9424e383a05d38121e4e</string>
 </dict>
 </plist>
