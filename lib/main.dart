@@ -31,8 +31,6 @@ void main() async {
     }
   }
 
-  print(seedColor);
-
   runApp(
     ProviderScope(
       overrides: [
