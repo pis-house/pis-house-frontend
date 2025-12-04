@@ -7,6 +7,7 @@ abstract class IndoorAreaRepositoryInterface {
     String indoorAreaId,
   );
   Stream<List<IndoorAreaSubscriptionModel>> getSubscribeByTenantId(
+    String integrationId,
     String tenantId,
   );
   Future<IndoorAreaModel> create(String tenantId, IndoorAreaModel indoorArea);

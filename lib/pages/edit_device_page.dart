@@ -78,10 +78,7 @@ class EditDevicePage extends HookConsumerWidget {
                     DeviceModel.update(
                       id: data.id,
                       name: formData.name,
-                      type: formData.type,
-                      airconTemperature: data.airconTemperature,
-                      isActive: data.isActive,
-                      lightBrightnessPercent: data.lightBrightnessPercent,
+                      setupDeviceId: formData.setupDeviceId,
                       createdAt: data.createdAt,
                     ),
                   );

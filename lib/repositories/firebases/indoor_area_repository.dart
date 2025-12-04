@@ -4,6 +4,7 @@ import 'package:pis_house_frontend/repositories/interfaces/indoor_area_repositor
 import 'package:pis_house_frontend/schemas/device_model.dart';
 import 'package:pis_house_frontend/schemas/indoor_area_model.dart';
 import 'package:pis_house_frontend/schemas/indoor_area_subscription_model.dart';
+import 'package:pis_house_frontend/schemas/setup_device_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
@@ -11,6 +12,12 @@ class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
 
   CollectionReference _rootRef(String tenantId) {
     return _db.collection("tenants").doc(tenantId).collection("indoor_areas");
+  }
+
+  CollectionReference<Map<String, dynamic>> _setupDeviceRef(
+    String integrationId,
+  ) {
+    return _db.collection('setup').doc(integrationId).collection('devices');
   }
 
   @override
@@ -25,35 +32,64 @@ class IndoorAreaRepository implements IndoorAreaRepositoryInterface {
 
   @override
   Stream<List<IndoorAreaSubscriptionModel>> getSubscribeByTenantId(
+    String integrationId,
     String tenantId,
   ) {
     return _rootRef(tenantId).snapshots().switchMap((indoorAreasSnapshot) {
       if (indoorAreasSnapshot.docs.isEmpty) {
         return Stream.value([]);
       }
-      final deviceStreams = indoorAreasSnapshot.docs.map((areaDoc) {
+      final areaSubscriptionStreams = indoorAreasSnapshot.docs.map((areaDoc) {
         final indoorArea = IndoorAreaModel.fromJson(
           areaDoc.data() as Map<String, dynamic>,
         );
-
         return _rootRef(tenantId)
             .doc(indoorArea.id)
             .collection("devices")
             .snapshots()
-            .map((devicesSnapshot) {
-              final devices = devicesSnapshot.docs.map((deviceDoc) {
-                return DeviceModel.fromJson(deviceDoc.data());
-              }).toList();
+            .switchMap((devicesSnapshot) {
+              if (devicesSnapshot.docs.isEmpty) {
+                return Stream.value(
+                  IndoorAreaSubscriptionModel(
+                    deviceSubscriptions: [],
+                    indoorArea: indoorArea,
+                  ),
+                );
+              }
 
-              return IndoorAreaSubscriptionModel(
-                devices: devices,
-                indoorArea: indoorArea,
-              );
+              final deviceSubscriptionStreams = devicesSnapshot.docs.map((
+                deviceDoc,
+              ) {
+                final device = DeviceModel.fromJson(deviceDoc.data());
+
+                final setupDeviceStream = _setupDeviceRef(integrationId)
+                    .doc(device.setupDeviceId)
+                    .snapshots()
+                    .map((setupDoc) {
+                      return SetupDeviceModel.fromJson(setupDoc.data()!);
+                    });
+
+                return Rx.combineLatest2(
+                  Stream.value(device),
+                  setupDeviceStream,
+                  (DeviceModel d, SetupDeviceModel sd) {
+                    return DeviceSubscriptionModel(device: d, setupDevice: sd);
+                  },
+                );
+              }).toList();
+              return Rx.combineLatest(deviceSubscriptionStreams, (
+                List<DeviceSubscriptionModel> deviceSubs,
+              ) {
+                return IndoorAreaSubscriptionModel(
+                  deviceSubscriptions: deviceSubs,
+                  indoorArea: indoorArea,
+                );
+              });
             });
       }).toList();
 
       return Rx.combineLatest(
-        deviceStreams,
+        areaSubscriptionStreams,
         (List<IndoorAreaSubscriptionModel> subscriptions) => subscriptions,
       );
     });

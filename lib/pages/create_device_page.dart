@@ -38,10 +38,7 @@ class CreateDevicePage extends HookConsumerWidget {
                 indoorAreaId,
                 DeviceModel.create(
                   name: formData.name,
-                  type: formData.type,
-                  airconTemperature: 25,
-                  isActive: false,
-                  lightBrightnessPercent: 50,
+                  setupDeviceId: formData.setupDeviceId,
                 ),
               );
               if (!context.mounted) return;
