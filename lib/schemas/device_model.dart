@@ -6,14 +6,9 @@ part 'device_model.g.dart';
 @JsonSerializable()
 class DeviceModel {
   final String id;
-  @JsonKey(name: 'aircon_temperature')
-  final double airconTemperature;
-  @JsonKey(name: 'is_active')
-  final bool isActive;
-  @JsonKey(name: 'light_brightness_percent')
-  final int lightBrightnessPercent;
   final String name;
-  final String type;
+  @JsonKey(name: 'setup_device_id')
+  final String setupDeviceId;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @JsonKey(name: 'updated_at')
@@ -21,31 +16,22 @@ class DeviceModel {
 
   DeviceModel({
     required this.id,
-    required this.airconTemperature,
-    required this.isActive,
-    required this.lightBrightnessPercent,
     required this.name,
-    required this.type,
+    required this.setupDeviceId,
     required this.createdAt,
     required this.updatedAt,
   });
 
   factory DeviceModel.create({
     required String name,
-    required String type,
-    required double airconTemperature,
-    required bool isActive,
-    required int lightBrightnessPercent,
+    required String setupDeviceId,
   }) {
     final now = DateTime.now();
     final id = Ulid().toString();
     return DeviceModel(
       id: id,
       name: name,
-      type: type,
-      airconTemperature: airconTemperature,
-      isActive: isActive,
-      lightBrightnessPercent: lightBrightnessPercent,
+      setupDeviceId: setupDeviceId,
       createdAt: now,
       updatedAt: now,
     );
@@ -54,20 +40,14 @@ class DeviceModel {
   factory DeviceModel.update({
     required String id,
     required String name,
-    required String type,
+    required String setupDeviceId,
     required DateTime createdAt,
-    required double airconTemperature,
-    required bool isActive,
-    required int lightBrightnessPercent,
   }) {
     final now = DateTime.now();
     return DeviceModel(
       id: id,
       name: name,
-      type: type,
-      airconTemperature: airconTemperature,
-      isActive: isActive,
-      lightBrightnessPercent: lightBrightnessPercent,
+      setupDeviceId: setupDeviceId,
       createdAt: createdAt,
       updatedAt: now,
     );

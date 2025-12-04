@@ -17,6 +17,7 @@ import 'package:pis_house_frontend/schemas/user_model.dart';
 class AuthUser {
   final String displayName;
   final String email;
+  final String integrationId;
   final String photoURL;
   final String tenantId;
   final String userId;
@@ -24,6 +25,7 @@ class AuthUser {
   const AuthUser({
     this.displayName = "",
     this.email = "",
+    this.integrationId = "",
     this.photoURL = "",
     this.tenantId = "",
     this.userId = "",
@@ -32,6 +34,7 @@ class AuthUser {
   AuthUser copyWith({
     String? displayName,
     String? email,
+    String? integrationId,
     String? photoURL,
     String? tenantId,
     String? userId,
@@ -39,6 +42,7 @@ class AuthUser {
     return AuthUser(
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
+      integrationId: integrationId ?? this.integrationId,
       photoURL: photoURL ?? this.photoURL,
       tenantId: tenantId ?? this.tenantId,
       userId: userId ?? this.userId,
@@ -107,6 +111,7 @@ class AuthService extends StateNotifier<AuthState> {
       user: AuthUser(
         displayName: user.displayName,
         email: firebaseUser.email ?? "",
+        integrationId: tenant.integrationId,
         photoURL: firebaseUser.photoURL ?? "",
         tenantId: tenant.id,
         userId: firebaseUser.uid,
@@ -152,6 +157,7 @@ class AuthService extends StateNotifier<AuthState> {
   Future<void> createTenantAndUser({
     required String displayName,
     required String email,
+    required String integrationId,
     required String password,
     required String tenantName,
   }) async {
@@ -175,7 +181,7 @@ class AuthService extends StateNotifier<AuthState> {
       );
     }
     final newTenant = await _tenantRepository.create(
-      TenantModel.create(name: tenantName),
+      TenantModel.create(integrationId: integrationId, name: tenantName),
     );
     await _userRepository.create(
       newTenant.id,
@@ -192,6 +198,7 @@ class AuthService extends StateNotifier<AuthState> {
       user: AuthUser(
         displayName: displayName,
         email: credential.user!.email ?? "",
+        integrationId: integrationId,
         photoURL: credential.user!.photoURL ?? "",
         tenantId: newTenant.id,
         userId: credential.user!.uid,
@@ -246,6 +253,7 @@ class AuthService extends StateNotifier<AuthState> {
       user: AuthUser(
         displayName: newUser.displayName,
         email: credential.user!.email ?? "",
+        integrationId: joinTenant.integrationId,
         photoURL: credential.user!.photoURL ?? "",
         tenantId: joinTenant.id,
         userId: credential.user!.uid,
@@ -276,6 +284,7 @@ class AuthService extends StateNotifier<AuthState> {
     final user = AuthUser(
       displayName: existUser.displayName,
       email: credential.user!.email ?? "",
+      integrationId: existsTenant.integrationId,
       photoURL: credential.user!.photoURL ?? "",
       tenantId: existsTenant.id,
       userId: existUser.id,

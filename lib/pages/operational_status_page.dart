@@ -10,8 +10,9 @@ import 'package:pis_house_frontend/components/common/pis_text_button.dart';
 import 'package:pis_house_frontend/infrastructures/auth_service.dart';
 import 'package:pis_house_frontend/repositories/firebases/device_repository.dart';
 import 'package:pis_house_frontend/repositories/firebases/indoor_area_repository.dart';
-import 'package:pis_house_frontend/schemas/device_model.dart';
+import 'package:pis_house_frontend/repositories/firebases/setup_device_repository.dart';
 import 'package:pis_house_frontend/schemas/indoor_area_model.dart';
+import 'package:pis_house_frontend/schemas/setup_device_model.dart';
 
 class OperationalStatusPage extends HookConsumerWidget {
   const OperationalStatusPage({super.key});
@@ -22,7 +23,11 @@ class OperationalStatusPage extends HookConsumerWidget {
     final authService = ref.watch(authServiceProvider);
     final indoorAreaRepository = ref.watch(indoorAreaRepositoryProvider);
     final indoorSubscriptionModels = indoorAreaRepository
-        .getSubscribeByTenantId(authService.user!.tenantId);
+        .getSubscribeByTenantId(
+          authService.user!.integrationId,
+          authService.user!.tenantId,
+        );
+    final setupDeviceRepository = ref.watch(setupDeviceRepositoryProvider);
     final deviceRepository = ref.watch(deviceRepositoryProvider);
     final currentIndoorArea = useState<IndoorAreaModel?>(null);
 
@@ -182,7 +187,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                 Expanded(
                   child: TabBarView(
                     children: indoorAreas.map((area) {
-                      final devicesInArea = area.devices;
+                      final devicesInArea = area.deviceSubscriptions;
                       if (devicesInArea.isEmpty) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -238,45 +243,58 @@ class OperationalStatusPage extends HookConsumerWidget {
 
                           final device = devicesInArea[deviceIndex - 1];
 
-                          return switch (device.type) {
+                          return switch (device.setupDevice.deviceType) {
                             'light' => LightCard(
-                              title: device.name,
-                              isActive: device.isActive,
-                              brightness: device.lightBrightnessPercent
+                              title: device.device.name,
+                              isActive: device.setupDevice.isActive,
+                              brightness: device
+                                  .setupDevice
+                                  .lightBrightnessPercent
                                   .toDouble(),
                               onIsActiveChanged: (isActive) async {
-                                await deviceRepository.update(
-                                  authService.user!.tenantId,
-                                  area.indoorArea.id,
-                                  DeviceModel.update(
-                                    id: device.id,
-                                    name: device.name,
-                                    type: device.type,
-                                    createdAt: device.createdAt,
-                                    airconTemperature: device.airconTemperature,
+                                await setupDeviceRepository.update(
+                                  authService.user!.integrationId,
+                                  SetupDeviceModel.update(
+                                    id: device.setupDevice.id,
+                                    name: device.setupDevice.name,
+                                    gateway: device.setupDevice.gateway,
+                                    ip: device.setupDevice.ip,
+                                    selfIp: device.setupDevice.selfIp,
+                                    ssid: device.setupDevice.ssid,
+                                    subnet: device.setupDevice.subnet,
+                                    password: device.setupDevice.password,
+                                    deviceType: device.setupDevice.deviceType,
                                     isActive: isActive,
-                                    lightBrightnessPercent:
-                                        device.lightBrightnessPercent,
+                                    airconTemperature:
+                                        device.setupDevice.airconTemperature,
+                                    lightBrightnessPercent: device
+                                        .setupDevice
+                                        .lightBrightnessPercent,
                                   ),
                                 );
                               },
                               onSliderValueChanged: (brightness) async {
-                                await deviceRepository.update(
-                                  authService.user!.tenantId,
-                                  area.indoorArea.id,
-                                  DeviceModel.update(
-                                    id: device.id,
-                                    name: device.name,
-                                    type: device.type,
-                                    createdAt: device.createdAt,
-                                    airconTemperature: device.airconTemperature,
-                                    isActive: device.isActive,
+                                await setupDeviceRepository.update(
+                                  authService.user!.integrationId,
+                                  SetupDeviceModel.update(
+                                    id: device.setupDevice.id,
+                                    name: device.setupDevice.name,
+                                    gateway: device.setupDevice.gateway,
+                                    ip: device.setupDevice.ip,
+                                    selfIp: device.setupDevice.selfIp,
+                                    ssid: device.setupDevice.ssid,
+                                    subnet: device.setupDevice.subnet,
+                                    password: device.setupDevice.password,
+                                    deviceType: device.setupDevice.deviceType,
+                                    isActive: device.setupDevice.isActive,
+                                    airconTemperature:
+                                        device.setupDevice.airconTemperature,
                                     lightBrightnessPercent: brightness.toInt(),
                                   ),
                                 );
                               },
                               onEdit: () => context.push(
-                                '/indoor-area/${area.indoorArea.id}/edit-device/${device.id}',
+                                '/indoor-area/${area.indoorArea.id}/edit-device/${device.device.id}',
                               ),
                               onDelete: () async {
                                 final bool? didConfirm = await showDialog<bool>(
@@ -285,7 +303,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                                     return AlertDialog(
                                       title: const Text('確認'),
                                       content: Text(
-                                        '${device.name}を本当に削除しますか？\nこの操作は元に戻せません。',
+                                        '${device.device.name}を本当に削除しますか？\nこの操作は元に戻せません。',
                                       ),
                                       actions: <Widget>[
                                         PisTextButton(
@@ -309,49 +327,60 @@ class OperationalStatusPage extends HookConsumerWidget {
                                   await deviceRepository.delete(
                                     authService.user!.tenantId,
                                     currentIndoorArea.value!.id,
-                                    device.id,
+                                    device.device.id,
                                   );
                                 }
                               },
                             ),
                             'aircon' => AirconCard(
-                              title: device.name,
-                              isActive: device.isActive,
-                              temperature: device.airconTemperature,
+                              title: device.device.name,
+                              isActive: device.setupDevice.isActive,
+                              temperature: device.setupDevice.airconTemperature,
                               onIsActiveChanged: (isActive) async {
-                                await deviceRepository.update(
-                                  authService.user!.tenantId,
-                                  area.indoorArea.id,
-                                  DeviceModel.update(
-                                    id: device.id,
-                                    name: device.name,
-                                    type: device.type,
-                                    createdAt: device.createdAt,
-                                    airconTemperature: device.airconTemperature,
+                                await setupDeviceRepository.update(
+                                  authService.user!.integrationId,
+                                  SetupDeviceModel.update(
+                                    id: device.setupDevice.id,
+                                    name: device.setupDevice.name,
+                                    gateway: device.setupDevice.gateway,
+                                    ip: device.setupDevice.ip,
+                                    selfIp: device.setupDevice.selfIp,
+                                    ssid: device.setupDevice.ssid,
+                                    subnet: device.setupDevice.subnet,
+                                    password: device.setupDevice.password,
+                                    deviceType: device.setupDevice.deviceType,
                                     isActive: isActive,
-                                    lightBrightnessPercent:
-                                        device.lightBrightnessPercent,
+                                    airconTemperature:
+                                        device.setupDevice.airconTemperature,
+                                    lightBrightnessPercent: device
+                                        .setupDevice
+                                        .lightBrightnessPercent,
                                   ),
                                 );
                               },
                               onSliderValueChanged: (temperature) async {
-                                await deviceRepository.update(
-                                  authService.user!.tenantId,
-                                  area.indoorArea.id,
-                                  DeviceModel.update(
-                                    id: device.id,
-                                    name: device.name,
-                                    type: device.type,
-                                    createdAt: device.createdAt,
+                                await setupDeviceRepository.update(
+                                  authService.user!.integrationId,
+                                  SetupDeviceModel.update(
+                                    id: device.setupDevice.id,
+                                    name: device.setupDevice.name,
+                                    gateway: device.setupDevice.gateway,
+                                    ip: device.setupDevice.ip,
+                                    selfIp: device.setupDevice.selfIp,
+                                    ssid: device.setupDevice.ssid,
+                                    subnet: device.setupDevice.subnet,
+                                    password: device.setupDevice.password,
+                                    deviceType: device.setupDevice.deviceType,
+                                    isActive: device.setupDevice.isActive,
                                     airconTemperature: temperature,
-                                    isActive: device.isActive,
-                                    lightBrightnessPercent:
-                                        device.lightBrightnessPercent,
+                                    lightBrightnessPercent: device
+                                        .setupDevice
+                                        .lightBrightnessPercent,
                                   ),
                                 );
                               },
                               onEdit: () => context.push(
-                                '/indoor-area/${area.indoorArea.id}/edit-device/${device.id}',
+                                '/indoor-area/${area.indoorArea.id}/edit-device/${device.device.id}',
                               ),
                               onDelete: () async {
                                 final bool? didConfirm = await showDialog<bool>(
@@ -360,7 +389,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                                     return AlertDialog(
                                       title: const Text('確認'),
                                       content: Text(
-                                        '${device.name}を本当に削除しますか？\nこの操作は元に戻せません。',
+                                        '${device.device.name}を本当に削除しますか？\nこの操作は元に戻せません。',
                                       ),
                                       actions: <Widget>[
                                         PisTextButton(
@@ -384,7 +413,7 @@ class OperationalStatusPage extends HookConsumerWidget {
                                   await deviceRepository.delete(
                                     authService.user!.tenantId,
                                     currentIndoorArea.value!.id,
-                                    device.id,
+                                    device.device.id,
                                   );
                                 }
                               },

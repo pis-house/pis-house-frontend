@@ -4,13 +4,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pis_house_frontend/components/common/pis_button.dart';
 import 'package:pis_house_frontend/components/common/pis_dropdown_button.dart';
 import 'package:pis_house_frontend/components/common/pis_text_form_field.dart';
+import 'package:pis_house_frontend/infrastructures/auth_service.dart';
+import 'package:pis_house_frontend/repositories/firebases/setup_device_repository.dart';
 import 'package:pis_house_frontend/schemas/device_model.dart';
+import 'package:pis_house_frontend/schemas/setup_device_model.dart';
 
 class DeviceFormData {
   final String name;
-  final String type;
+  final String setupDeviceId;
 
-  DeviceFormData({required this.name, required this.type});
+  DeviceFormData({required this.name, required this.setupDeviceId});
 }
 
 class DeviceForm extends HookConsumerWidget {
@@ -26,8 +29,12 @@ class DeviceForm extends HookConsumerWidget {
       text: initialData?.name ?? '',
     );
 
-    final deviceTypeSelects = {'light': '照明', 'aircon': 'エアコン'};
-    final selectDeviceType = useState(initialData?.type ?? 'light');
+    final authProvider = ref.watch(authServiceProvider);
+    final setupDevicesAsyncValue = ref
+        .watch(setupDeviceRepositoryProvider)
+        .getAll(authProvider.user!.integrationId);
+
+    final selectSetupDeviceId = useState(initialData?.setupDeviceId);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -44,18 +51,38 @@ class DeviceForm extends HookConsumerWidget {
                   (value == null || value.isEmpty) ? 'デバイス名を入力してください。' : null,
             ),
             const SizedBox(height: 32),
-            PisDropdownButton<String>(
-              label: '種類',
-              value: selectDeviceType.value,
-              onChanged: (String? newValue) {
-                selectDeviceType.value = newValue ?? 'light';
-              },
-              items: deviceTypeSelects.entries.map((entry) {
-                return DropdownMenuItem<String>(
-                  value: entry.key,
-                  child: Text(entry.value),
+            FutureBuilder<List<SetupDeviceModel>>(
+              future: setupDevicesAsyncValue,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return const Text('セットアップデバイスの取得に失敗しました。');
+                }
+
+                final setupDevices = snapshot.data!;
+
+                return PisDropdownButton<String>(
+                  label: 'セットアップデバイス選択',
+                  value: selectSetupDeviceId.value,
+                  items: setupDevices
+                      .map(
+                        (device) => DropdownMenuItem<String>(
+                          value: device.id,
+                          child: Text(device.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    selectSetupDeviceId.value = value;
+                  },
+                  validator: (value) => (value == null || value.isEmpty)
+                      ? 'セットアップデバイスを選択してください。'
+                      : null,
                 );
-              }).toList(),
+              },
             ),
             const SizedBox(height: 32),
 
@@ -66,7 +93,7 @@ class DeviceForm extends HookConsumerWidget {
                   await onSave(
                     DeviceFormData(
                       name: deviceNameController.text,
-                      type: selectDeviceType.value,
+                      setupDeviceId: selectSetupDeviceId.value!,
                     ),
                   );
                 }

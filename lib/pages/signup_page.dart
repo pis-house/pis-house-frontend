@@ -25,6 +25,7 @@ class SignupPage extends HookConsumerWidget {
     final nickNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final tenantNameController = useTextEditingController();
+    final integrationIdController = useTextEditingController();
     final theme = Theme.of(context);
     final authService = ref.watch(authServiceProvider);
     final signupTenantTypeTab = const <SignupTenantType, Widget>{
@@ -85,6 +86,15 @@ class SignupPage extends HookConsumerWidget {
                             ),
                             const SizedBox(height: 16),
                             PisTextFormField(
+                              label: "スマホアプリ連携ID",
+                              controller: integrationIdController,
+                              validator: (value) =>
+                                  (value == null || value.isEmpty)
+                                  ? 'スマホアプリ連携IDを入力してください。'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            PisTextFormField(
                               label: "ニックネーム",
                               controller: nickNameController,
                               validator: (value) =>
@@ -120,6 +130,8 @@ class SignupPage extends HookConsumerWidget {
                                   if (formKey.currentState!.validate()) {
                                     isSignupButtonLoading.value = true;
                                     final email = emailController.text;
+                                    final integrationId =
+                                        integrationIdController.text;
                                     final nickName = nickNameController.text;
                                     final password = passwordController.text;
                                     final tenantName =
@@ -130,6 +142,7 @@ class SignupPage extends HookConsumerWidget {
                                         await authService.createTenantAndUser(
                                           displayName: nickName,
                                           email: email,
+                                          integrationId: integrationId,
                                           password: password,
                                           tenantName: tenantName,
                                         );
@@ -150,31 +163,21 @@ class SignupPage extends HookConsumerWidget {
                                       );
                                       if (!context.mounted) return;
                                       context.go('/');
-                                    } on TenantNotExistsException catch (e) {
+                                    } on Exception catch (e) {
                                       if (!context.mounted) return;
-                                      PisErrorSnackBar(
-                                        e.toString(),
-                                      ).show(context);
-                                    } on TenantNotJoinException catch (e) {
-                                      if (!context.mounted) return;
-                                      PisErrorSnackBar(
-                                        e.toString(),
-                                      ).show(context);
-                                    } on TenantJoinException catch (e) {
-                                      if (!context.mounted) return;
-                                      PisErrorSnackBar(
-                                        e.toString(),
-                                      ).show(context);
-                                    } on TenantExistsException catch (e) {
-                                      if (!context.mounted) return;
-                                      PisErrorSnackBar(
-                                        e.toString(),
-                                      ).show(context);
-                                    } on Exception {
-                                      if (!context.mounted) return;
-                                      PisErrorSnackBar(
-                                        '不明なエラーが発生しました',
-                                      ).show(context);
+
+                                      if (e is TenantNotExistsException ||
+                                          e is TenantNotJoinException ||
+                                          e is TenantJoinException ||
+                                          e is TenantExistsException) {
+                                        PisErrorSnackBar(
+                                          e.toString(),
+                                        ).show(context);
+                                      } else {
+                                        PisErrorSnackBar(
+                                          '不明なエラーが発生しました',
+                                        ).show(context);
+                                      }
                                     }
                                     isSignupButtonLoading.value = false;
                                   }
