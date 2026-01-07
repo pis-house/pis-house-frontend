@@ -1,15 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pis_house_frontend/schemas/notification_content_model.dart';
 
 part 'notification_model.g.dart';
 
 @JsonSerializable()
 class NotificationModel {
-  final List<NotificationContentModel> contents;
-  @JsonKey(name: 'last_read_at')
-  final DateTime lastReadAt;
+  final String id;
+  final String title;
+  final String type;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
 
-  NotificationModel({required this.contents, required this.lastReadAt});
+  NotificationModel({
+    required this.id,
+    required this.title,
+    required this.type,
+    required this.createdAt,
+  });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       _$NotificationModelFromJson(json);

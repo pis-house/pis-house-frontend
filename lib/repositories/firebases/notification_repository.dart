@@ -6,23 +6,19 @@ import 'package:pis_house_frontend/schemas/notification_model.dart';
 class NotificationRepository implements NotificationRepositoryInterface {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  DocumentReference _tenantRef(String tenantId) {
-    return _db
-        .collection("tenants")
-        .doc(tenantId)
-        .collection("notification")
-        .doc("node");
+  CollectionReference _rootRef(String tenantId) {
+    return _db.collection("tenants").doc(tenantId).collection("notifications");
   }
 
   @override
-  Stream<NotificationModel?> firstSubscribeByTenantId(String tenantId) {
-    return _tenantRef(tenantId).snapshots().map((doc) {
-      if (!doc.exists) {
-        return null;
-      }
-      final data = Map<String, dynamic>.from(doc.data() as Map);
-      return NotificationModel.fromJson(data);
-    });
+  Future<List<NotificationModel>> getByTenantId(String tenantId) async {
+    final snapshot = await _rootRef(tenantId).get();
+    if (snapshot.size == 0) return [];
+
+    return snapshot.docs.map((entry) {
+      final deviceData = Map<String, dynamic>.from(entry.data() as Map);
+      return NotificationModel.fromJson(deviceData);
+    }).toList();
   }
 }
 
