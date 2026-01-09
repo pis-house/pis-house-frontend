@@ -181,7 +181,11 @@ class AuthService extends StateNotifier<AuthState> {
       );
     }
     final newTenant = await _tenantRepository.create(
-      TenantModel.create(integrationId: integrationId, name: tenantName),
+      TenantModel.create(
+        id: integrationId,
+        integrationId: integrationId,
+        name: tenantName,
+      ),
     );
     await _userRepository.create(
       newTenant.id,

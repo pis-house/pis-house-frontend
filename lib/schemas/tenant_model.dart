@@ -22,11 +22,11 @@ class TenantModel {
   });
 
   factory TenantModel.create({
+    required String id,
     required String integrationId,
     required String name,
   }) {
     final now = DateTime.now();
-    final id = Ulid().toString();
     return TenantModel(
       id: id,
       integrationId: integrationId,
