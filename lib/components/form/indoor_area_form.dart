@@ -13,7 +13,7 @@ class IndoorAreaForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = GlobalKey<FormState>();
+    final formKey = useMemoized(() => GlobalKey<FormState>());
     final areaNameController = useTextEditingController(
       text: initialData?.name ?? '',
     );
